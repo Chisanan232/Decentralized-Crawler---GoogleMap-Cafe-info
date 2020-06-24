@@ -57,6 +57,8 @@ class CafeKing extends Actor with ActorLogging{
 
 
   override def preStart(): Unit = {
+    log.info("Initial pre-data we need.")
+
     // Load data into King Actor.
     val ds = new DataSource
     val cafeDataNum = ds.dataNumber()
@@ -81,7 +83,7 @@ class CafeKing extends Actor with ActorLogging{
   override def receive: Receive = {
 
     case CrawlTarget(content, part) =>
-      log.info("")
+      log.info("Start to crawl GoogleMap cafe data.")
 
       // We should classify the tasks into 4 parts: Basic info, Services, Comments and Images.
       // So we need to have 4 Paladins who has the responsibility of these tasks.
