@@ -32,10 +32,11 @@ class ProducePreDataPaladin extends Actor with ActorLogging {
 
 
     case ProduceFinish =>
-      log.info("")
+      log.info("Thank you for your help!")
       this.currentProduceTaskDone += 1
       if (this.currentProduceTaskDone.equals(this.allProduceTaskNum)) {
-        log.info("")
+        log.info("Done to produce pre-data!")
+        context.stop(self)
       }
 
   }
