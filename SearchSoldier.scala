@@ -15,10 +15,13 @@ import akka.util.Timeout
 
 class SearchSoldier extends Actor with ActorLogging {
 
+  var SoldierID: Int = 0
+
   override def receive: Receive = {
 
     case SearchPreData(content, soldierID) =>
       log.info("Roger that! Start to sniff all data of target topic og Kafka server.")
+      this.SoldierID = soldierID
 
       implicit val groupID = "crawler-soldier"
       val cm = new DataConsumerManagement() {
@@ -40,7 +43,6 @@ class SearchSoldier extends Actor with ActorLogging {
                   case Success(actorRef) => actorRef ! CrawlTask("Here is the crawl pre-data.", crawlPreData)
                   case Failure(ex) => log.error(s"The AKKA actor path 'user/$king/$basicPaladin/$basicSoldier-$soldierID' doesn't exist! Please check it again.")
                 }
-
               }
             }
           }
