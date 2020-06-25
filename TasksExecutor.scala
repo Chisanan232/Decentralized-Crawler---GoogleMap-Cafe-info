@@ -7,9 +7,8 @@ class TasksExecutor {
 
   val Path = "src/main/scala/Cafe_GoogleMap_Crawler/crawler_running_code"
 
-  def runCode(preData: Map[String, String]): Unit = {
-    // 1. Get the data which be saved in the collection
-    val crawlPart = Basic
+  def runCode(crawlPart: CrawlPart, preData: Map[String, String]): Unit = {
+    // 1. Parse crawl pre-data. (Get the data which be saved in the collection)
     val id = preData.get("id")
     val api = preData.get("url")
     val lat = preData.get("lat")
