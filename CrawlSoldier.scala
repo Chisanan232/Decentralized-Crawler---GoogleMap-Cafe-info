@@ -17,14 +17,11 @@ class CrawlSoldier extends Actor with ActorLogging {
     case CrawlTask(content, target) =>
       log.info("Get the crawler pre-data!")
 
-      // Parse the crawl pre-data.
-      val id = target.get("id")
-      val api = target.get("url")
-      val lat = target.get("lat")
-      val lng = target.get("lng")
-
-      // Start to crawl target data with the info.
+      // Start to crawl target data with the 'pre-data'.
       val te = new TasksExecutor
+      te.runCode(Basic, target)
+
+      // Get the result (cafe info in GoogleMap) and save it to database 'Cassandra'
 
   }
 
