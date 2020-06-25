@@ -1,12 +1,12 @@
 package Cafe_GoogleMap_Crawler
 
-import org.apache.orc.impl.StringRedBlackTree
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.util.{Success, Failure}
+
 import scala.collection.JavaConverters._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.DefaultFormats
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Success, Failure}
-import scala.concurrent.duration._
 
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import akka.actor.{Actor, ActorLogging}
@@ -16,6 +16,11 @@ import akka.util.Timeout
 class SearchSoldier extends Actor with ActorLogging {
 
   var SoldierID: Int = 0
+
+  private def parseData(data: Any): Map[String, String] = {
+    implicit val dataFormat = DefaultFormats
+    parse(data.toString()).extract[Map[String, String]]
+  }
 
   private def sendTask(crawlPreData: Map[String, String]): Unit = {
     // How to get the Akka actor by target actor'name
@@ -46,8 +51,7 @@ class SearchSoldier extends Actor with ActorLogging {
             val records = consumer.poll(timeoutMins).asScala
             for (record <- records) {
               if (record.value() != "" && record.value() != " ") {
-                implicit val dataFormat = DefaultFormats
-                val crawlPreData = parse(record.value().toString()).extract[Map[String, String]]
+                val crawlPreData = parseData(record.value())
                 sendTask(crawlPreData)
               }
             }
