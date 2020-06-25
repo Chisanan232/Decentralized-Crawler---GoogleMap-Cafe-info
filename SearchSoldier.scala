@@ -17,6 +17,22 @@ class SearchSoldier extends Actor with ActorLogging {
 
   var SoldierID: Int = 0
 
+  private def sendTask(crawlPreData: Map[String, String]): Unit = {
+    // How to get the Akka actor by target actor'name
+    // https://stackoverflow.com/questions/25966635/how-to-get-akka-actor-by-name-as-an-actorref
+
+    implicit val timeout = Timeout(5.seconds)
+    val king = AkkaConfig.CafeKingName
+    val basicPaladin = AkkaConfig.CafeBasicPaladinName
+    val basicSoldier = AkkaConfig.CafeBasicSoldierName
+    val soldierID = this.SoldierID
+    context.system.actorSelection(s"user/$king/$basicPaladin/$basicSoldier-$soldierID").resolveOne().onComplete{
+      case Success(actorRef) => actorRef ! CrawlTask("Here is the crawl pre-data.", crawlPreData)
+      case Failure(ex) => log.error(s"The AKKA actor path 'user/$king/$basicPaladin/$basicSoldier-$soldierID' doesn't exist! Please check it again.")
+    }
+  }
+
+
   override def receive: Receive = {
 
     case SearchPreData(content, soldierID) =>
@@ -32,17 +48,7 @@ class SearchSoldier extends Actor with ActorLogging {
               if (record.value() != "" && record.value() != " ") {
                 implicit val dataFormat = DefaultFormats
                 val crawlPreData = parse(record.value().toString()).extract[Map[String, String]]
-
-                // How to get the Akka actor by target actor'name
-                // https://stackoverflow.com/questions/25966635/how-to-get-akka-actor-by-name-as-an-actorref
-                implicit val timeout = Timeout(5.seconds)
-                val king = AkkaConfig.CafeKingName
-                val basicPaladin = AkkaConfig.CafeBasicPaladinName
-                val basicSoldier = AkkaConfig.CafeBasicSoldierName
-                context.system.actorSelection(s"user/$king/$basicPaladin/$basicSoldier-$soldierID").resolveOne().onComplete{
-                  case Success(actorRef) => actorRef ! CrawlTask("Here is the crawl pre-data.", crawlPreData)
-                  case Failure(ex) => log.error(s"The AKKA actor path 'user/$king/$basicPaladin/$basicSoldier-$soldierID' doesn't exist! Please check it again.")
-                }
+                sendTask(crawlPreData)
               }
             }
           }
