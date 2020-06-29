@@ -11,22 +11,11 @@ class CafeBasicInfo extends Actor with ActorLogging {
       log.info("I Receive task!")
       val consumerLeaderPath = context.self.path
       val msg = s"I'm ready! I'm $consumerLeaderPath"
-      val parent = context.actorSelection(context.parent.path)
-      //      println("*******===========**** Consumer ***===========*******===========")
-      //      println(msg)
-      //      println(context.parent.path)
-      //      println(parent)
-      //      println("*******===========*******===========*******===========")
       sender() ! msg
 
 
     case CrawlCafeBasic =>
       log.info("Got the Task! Start to crawl cafe basic information data.")
-
-      // 1. Get the data and analyse
-      // 2. Produce the data into Kafka server
-      // 3. Build up it own crawler soldiers
-      // 4. Distribute tasks to each crawler soldier.
 
       val crawlerSoldiers = if (AkkaConfig.BasicCrawlerNumber.equals(0)) {
         new Array[ActorRef](AkkaConfig.CrawlerNumber)
