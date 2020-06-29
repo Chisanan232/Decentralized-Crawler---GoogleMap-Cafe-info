@@ -7,7 +7,7 @@ class TasksExecutor {
 
   val Path = "src/main/scala/Cafe_GoogleMap_Crawler/crawler_running_code"
 
-  def runCode(crawlPart: CrawlPart, preData: Map[String, String]): Unit = {
+  def runCode(crawlPart: CrawlPart, preData: Map[String, String]): String = {
     // 1. Parse crawl pre-data. (Get the data which be saved in the collection)
     val id = preData.get("id").get.toString
     val api = preData.get("url").get.toString
@@ -20,6 +20,7 @@ class TasksExecutor {
     println("[INFO] Running Python Code Command Line: \n" + runningCmd)
     val runningResult = runningCmd.!!
     println(s"[DEBUG] running command line result: $runningResult")
+    runningResult
   }
 
 }
