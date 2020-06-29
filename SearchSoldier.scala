@@ -38,12 +38,15 @@ class SearchSoldier extends Actor with ActorLogging {
 
     implicit val timeout = Timeout(5.seconds)
     val king = AkkaConfig.CafeKingName
-    val paladin = AkkaConfig.CafeBasicPaladinName
-    val soldier = AkkaConfig.CafeBasicSoldierName
-    val soldierID = this.SoldierID
-    context.system.actorSelection(s"user/$king/$basicPaladin/$basicSoldier-$soldierID").resolveOne().onComplete{
-      case Success(actorRef) => actorRef ! CrawlTask("Here is the crawl pre-data.", crawlPreData)
-      case Failure(ex) => log.error(s"The AKKA actor path 'user/$king/$basicPaladin/$basicSoldier-$soldierID' doesn't exist! Please check it again.")
+    // Send the crawler pre-data to each Paladins.
+    val allPart = List(Basic, Services, Comments, Images)
+    for (part <- allPart) {
+      val (paladin, soldier) = this.getActorSelection(part)
+      val soldierID = this.SoldierID
+      context.system.actorSelection(s"user/$king/$paladin/$soldier-$soldierID").resolveOne().onComplete{
+        case Success(actorRef) => actorRef ! CrawlTask("Here is the crawl pre-data.", crawlPreData)
+        case Failure(ex) => log.error(s"The AKKA actor path 'user/$king/$paladin/$soldier-$soldierID' doesn't exist! Please check it again.")
+      }
     }
   }
 
