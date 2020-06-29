@@ -1,4 +1,6 @@
-package Cafe_GoogleMap_Crawler
+package Cafe_GoogleMap_Crawler.src.main.scala.Paladin
+
+import Cafe_GoogleMap_Crawler.src.main.scala.config._
 
 import akka.actor.{Actor, Props, ActorLogging}
 

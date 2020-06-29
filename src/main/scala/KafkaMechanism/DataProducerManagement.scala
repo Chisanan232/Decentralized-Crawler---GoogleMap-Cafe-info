@@ -1,4 +1,4 @@
-package Cafe_GoogleMap_Crawler
+package Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism
 
 import java.util
 import java.util.Properties
@@ -7,7 +7,7 @@ import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 
-protected class DataProducerManagement extends KafkaManagement {
+class DataProducerManagement extends KafkaManagement {
 
   private val props = new Properties()
 //  val producer = new KafkaProducer[String, String](this.defineProperties())

@@ -1,4 +1,8 @@
-package Cafe_GoogleMap_Crawler
+package Cafe_GoogleMap_Crawler.src.main.scala.Soldier
+
+import Cafe_GoogleMap_Crawler.src.main.scala.config._
+import Cafe_GoogleMap_Crawler.src.main.scala.{CrawlPart, Basic, Services, Comments, Images}
+import Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism.DataConsumerManagement
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._

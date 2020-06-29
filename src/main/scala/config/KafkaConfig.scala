@@ -1,4 +1,4 @@
-package Cafe_GoogleMap_Crawler
+package Cafe_GoogleMap_Crawler.src.main.scala.config
 
 object KafkaConfig {
 

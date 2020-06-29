@@ -1,4 +1,4 @@
-package Cafe_GoogleMap_Crawler
+package Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism
 
 import java.util
 import java.util.Properties
@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.TopicPartition
 
 
-protected class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
+class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
 
   private val props = new Properties()
   //  val consumer = new KafkaConsumer[String, String](this.defineProperties())

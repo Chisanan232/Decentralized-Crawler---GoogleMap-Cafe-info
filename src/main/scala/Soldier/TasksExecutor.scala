@@ -1,4 +1,6 @@
-package Cafe_GoogleMap_Crawler
+package Cafe_GoogleMap_Crawler.src.main.scala.Soldier
+
+import Cafe_GoogleMap_Crawler.src.main.scala.CrawlPart
 
 import scala.sys.process._
 
