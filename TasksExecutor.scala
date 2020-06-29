@@ -8,8 +8,8 @@ class TasksExecutor {
 
   val Path = "src/main/scala/Cafe_GoogleMap_Crawler/crawler_running_code"
 
-  def filterData(data: String): String = {
-    val dataFormatter = "############################################################.{1,8192}############################################################".r
+  private def filterData(data: String): String = {
+    val dataFormatter = "############################################################.{1,100000000}############################################################".r
     val targetData = dataFormatter.findFirstIn(data)
     if (targetData.isEmpty) {
       ""
