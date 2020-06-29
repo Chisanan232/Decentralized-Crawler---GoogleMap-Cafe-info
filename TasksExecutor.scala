@@ -11,10 +11,10 @@ class TasksExecutor {
   private def filterData(data: String): String = {
     val dataFormatter = "############################################################.{1,100000000}############################################################".r
     val targetData = dataFormatter.findFirstIn(data)
-    if (targetData.isEmpty) {
-      ""
+    if (targetData.isDefined) {
+      targetData.get.toString.split("############################################################").toList.apply(1)
     } else {
-      targetData.get.toString
+      ""
     }
   }
 
