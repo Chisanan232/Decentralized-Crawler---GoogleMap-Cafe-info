@@ -1,11 +1,23 @@
 package Cafe_GoogleMap_Crawler
 
+import scala.util.matching.Regex
 import scala.sys.process._
 
 
 class TasksExecutor {
 
   val Path = "src/main/scala/Cafe_GoogleMap_Crawler/crawler_running_code"
+
+  def filterData(data: String): String = {
+    val dataFormatter = "############################################################.{1,8192}############################################################".r
+    val targetData = dataFormatter.findFirstIn(data)
+    if (targetData.isEmpty) {
+      ""
+    } else {
+      targetData.get.toString
+    }
+  }
+
 
   def runCode(crawlPart: CrawlPart, preData: Map[String, String]): String = {
     // 1. Parse crawl pre-data. (Get the data which be saved in the collection)
@@ -20,7 +32,7 @@ class TasksExecutor {
     println("[INFO] Running Python Code Command Line: \n" + runningCmd)
     val runningResult = runningCmd.!!
     println(s"[DEBUG] running command line result: $runningResult")
-    runningResult
+    this.filterData(runningResult)
   }
 
 }
