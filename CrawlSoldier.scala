@@ -26,7 +26,7 @@ class CrawlSoldier extends Actor with ActorLogging {
 //        case AkkaConfig.CafeCommentsPaladinName =>  te.runCode(Comments, target)
 //        case AkkaConfig.CafeImagesPaladinName =>  te.runCode(Images, target)
 //      }
-      val runningResult: Unit = te.runCode(Basic, target)
+      val runningResult = te.runCode(Basic, target)
       WorkStatus.Working = false
 
       // Get the result (cafe info in GoogleMap) and save it to database 'Cassandra'
