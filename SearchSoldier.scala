@@ -22,14 +22,24 @@ class SearchSoldier extends Actor with ActorLogging {
     parse(data.toString()).extract[Map[String, String]]
   }
 
+  private def getActorSelection(part: CrawlPart): (String, String) = {
+    part match {
+      case Basic => (AkkaConfig.CafeBasicPaladinName, AkkaConfig.CafeBasicSoldierName)
+      case Services => (AkkaConfig.CafeServicePaladinName, AkkaConfig.CafeServiceSoldierName)
+      case Comments => (AkkaConfig.CafeCommentsPaladinName, AkkaConfig.CafeCommentsSoldierName)
+      case Images => (AkkaConfig.CafeImagesPaladinName, AkkaConfig.CafeImagesSoldierName)
+      case _ => ("", "")
+    }
+  }
+
   private def sendTask(crawlPreData: Map[String, String]): Unit = {
     // How to get the Akka actor by target actor'name
     // https://stackoverflow.com/questions/25966635/how-to-get-akka-actor-by-name-as-an-actorref
 
     implicit val timeout = Timeout(5.seconds)
     val king = AkkaConfig.CafeKingName
-    val basicPaladin = AkkaConfig.CafeBasicPaladinName
-    val basicSoldier = AkkaConfig.CafeBasicSoldierName
+    val paladin = AkkaConfig.CafeBasicPaladinName
+    val soldier = AkkaConfig.CafeBasicSoldierName
     val soldierID = this.SoldierID
     context.system.actorSelection(s"user/$king/$basicPaladin/$basicSoldier-$soldierID").resolveOne().onComplete{
       case Success(actorRef) => actorRef ! CrawlTask("Here is the crawl pre-data.", crawlPreData)
