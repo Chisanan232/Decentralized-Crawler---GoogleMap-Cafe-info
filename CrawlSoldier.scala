@@ -19,7 +19,12 @@ class CrawlSoldier extends Actor with ActorLogging {
 
       // Start to crawl target data with the 'pre-data'.
       val te = new TasksExecutor
-      te.runCode(Basic, target)
+      context.parent.path.name.toString match {
+        case AkkaConfig.CafeBasicPaladinName =>  te.runCode(Basic, target)
+        case AkkaConfig.CafeServicePaladinName =>  te.runCode(Services, target)
+        case AkkaConfig.CafeCommentsPaladinName =>  te.runCode(Comments, target)
+        case AkkaConfig.CafeImagesPaladinName =>  te.runCode(Images, target)
+      }
 
       // Get the result (cafe info in GoogleMap) and save it to database 'Cassandra'
 
