@@ -12,6 +12,7 @@ object AkkaConfig {
 
   val CafeKingName = "Cafe-King"
   val CafeDistributePaladinName = "Cafe-Distribute-Paladin"
+  val CafeDataSaverPaladinName = "Cafe-Data-Saver-Paladin"
   val CafeBasicPaladinName = "Cafe-Basic-Paladin"
   val CafeServicePaladinName = "Cafe-Services-Paladin"
   val CafeCommentsPaladinName = "Cafe-Comments-Paladin"
