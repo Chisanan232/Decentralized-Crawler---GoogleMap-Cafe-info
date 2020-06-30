@@ -1,5 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.config
 
+import Cafe_GoogleMap_Crawler.src.main.scala.CrawlPart
+
 trait CafeCrawlerMsg {
   val content: String
 }
@@ -54,7 +56,7 @@ case class CrawlTask(content: String, target: Map[String, String]) extends CafeC
 
 
 // Crawler Soldiers
-case class RunningTaskResult(content: String, data: String) extends CafeCrawlerMsg
+case class RunningTaskResult(content: String, part: CrawlPart, data: String) extends CafeCrawlerMsg
 
 
 // For test or debug
