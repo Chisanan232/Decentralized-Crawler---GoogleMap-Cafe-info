@@ -28,6 +28,10 @@ class DataSaverPaladin extends Actor with ActorLogging {
 
   override def receive: Receive = {
 
+    case CallDataSaverPaladin =>
+      log.info("Got it!")
+
+
     case RunningTaskResult(content, data) =>
       log.info("Receive the crawl-result data!")
 
