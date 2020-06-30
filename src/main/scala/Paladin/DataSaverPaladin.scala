@@ -16,6 +16,15 @@ class DataSaverPaladin extends Actor with ActorLogging {
     .setAppName(CassandraConfig.CassandraAppName)
   val sc = new SparkContext(conf)
 
+  private def writeData(keyspace: String, table: String, data: String): Unit = {
+    val sparkRDDData = this.sc.parallelize(data)
+    val columns = table match {
+      case "" => SomeColumns()
+      case _ => SomeColumns("key", "value")
+    }
+    sparkRDDData.saveToCassandra(keyspace, table, columns)
+  }
+
 
   override def receive: Receive = {
 
