@@ -5,8 +5,18 @@ import Cafe_GoogleMap_Crawler.src.main.scala.Soldier.CrawlSoldier
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
+import org.apache.spark.{SparkConf, SparkContext}
+import com.datastax.spark.connector._
+
 
 class CafeBasicInfo extends Actor with ActorLogging {
+
+  val conf = new SparkConf(true)
+    .set("spark.cassandra.connection.host", CassandraConfig.CassandraHost)
+    .setMaster(CassandraConfig.CassandraMaster)
+    .setAppName(CassandraConfig.CassandraAppName)
+  val sc = new SparkContext(conf)
+
 
   override def receive: Receive = {
 
