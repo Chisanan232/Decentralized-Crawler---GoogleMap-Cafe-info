@@ -1,5 +1,6 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.Paladin
 
+import Cafe_GoogleMap_Crawler.src.main.scala.{Basic, Services, Comments, Images}
 import Cafe_GoogleMap_Crawler.src.main.scala.config._
 
 import org.json4s.jackson.JsonMethods._
@@ -25,10 +26,13 @@ class DataSaverPaladin extends Actor with ActorLogging {
   }
 
 
-  private def writeData(keyspace: String, table: String, data: String): Unit = {
-    val sparkRDDData = this.sc.parallelize(data)
+  private def writeData(keyspace: String, table: String, data: Map[String, Any]): Unit = {
+    val sparkRDDData = this.sc.parallelize(Seq())
     val columns = table match {
-      case "" => SomeColumns()
+      case Basic.toString => SomeColumns("isClosed", "title", "address", "phone", "url", "businessHours", "rating", "googlemap", "id", "createdAt")
+      case Services.toString => SomeColumns("services", "googlemap", "id", "createdAt")
+      case Comments.toString => SomeColumns("comments", "googlemap", "id", "createdAt")
+      case Images.toString => SomeColumns("photos", "googlemap", "id", "createdAt")
       case _ => SomeColumns("key", "value")
     }
     sparkRDDData.saveToCassandra(keyspace, table, columns)
@@ -43,6 +47,9 @@ class DataSaverPaladin extends Actor with ActorLogging {
 
     case RunningTaskResult(content, part, data) =>
       log.info("Receive the crawl-result data!")
+
+      val mapData = this.parseData(data)
+      this.writeData("target_keyspace", part.toString, mapData)
 
   }
 
