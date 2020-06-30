@@ -5,27 +5,8 @@ import Cafe_GoogleMap_Crawler.src.main.scala.Soldier.CrawlSoldier
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
-import org.apache.spark.{SparkConf, SparkContext}
-import com.datastax.spark.connector._
-
 
 class CafeBasicInfo extends Actor with ActorLogging {
-
-  val conf = new SparkConf(true)
-    .set("spark.cassandra.connection.host", CassandraConfig.CassandraHost)
-    .setMaster(CassandraConfig.CassandraMaster)
-    .setAppName(CassandraConfig.CassandraAppName)
-  val sc = new SparkContext(conf)
-
-  private def writeData(keyspace: String, table: String, data: String): Unit = {
-    val sparkRDDData = this.sc.parallelize(data)
-    val columns = table match {
-      case "" => SomeColumns()
-      case _ => SomeColumns("key", "value")
-    }
-    sparkRDDData.saveToCassandra(keyspace, table, columns)
-  }
-
 
   override def receive: Receive = {
 
@@ -49,10 +30,6 @@ class CafeBasicInfo extends Actor with ActorLogging {
         val soldier = context.actorSelection(soldierRef.path)
         soldier ! ReadyOnStandby("Ready, soldiers! And here is your ID.", soldierRef.path.name.takeRight(1).toInt)
       })
-
-
-    case RunningTaskResult =>
-      log.info("Receive the crawl-result data!")
 
   }
 
