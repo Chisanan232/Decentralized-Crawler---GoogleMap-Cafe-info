@@ -4,5 +4,6 @@ object CassandraConfig {
 
   val CassandraHost = "127.0.0.1"
   val CassandraMaster = "local[*]"
+  val CassandraAppName = "Cafe_Cassandra"
 
 }
