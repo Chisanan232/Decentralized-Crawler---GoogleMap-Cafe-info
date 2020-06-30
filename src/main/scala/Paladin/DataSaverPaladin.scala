@@ -41,7 +41,7 @@ class DataSaverPaladin extends Actor with ActorLogging {
       log.info("Got it!")
 
 
-    case RunningTaskResult(content, data) =>
+    case RunningTaskResult(content, part, data) =>
       log.info("Receive the crawl-result data!")
 
   }
