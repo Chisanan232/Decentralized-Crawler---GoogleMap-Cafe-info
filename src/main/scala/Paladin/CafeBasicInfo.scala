@@ -31,6 +31,10 @@ class CafeBasicInfo extends Actor with ActorLogging {
         soldier ! ReadyOnStandby("Ready, soldiers! And here is your ID.", soldierRef.path.name.takeRight(1).toInt)
       })
 
+
+    case RunningTaskResult =>
+      log.info("Receive the crawl-result data!")
+
   }
 
 }
