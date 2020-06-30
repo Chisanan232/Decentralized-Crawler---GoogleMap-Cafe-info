@@ -100,6 +100,11 @@ class CafeKing extends Actor with ActorLogging{
       this.runTask(AkkaConfig.CafeCommentsPaladinName)
       this.runTask(AkkaConfig.CafeImagesPaladinName)
 
+      // Active the data saver Paladin
+      val saveDataPaladinRef = context.actorOf(Props[DataSaverPaladin], AkkaConfig.CafeDataSaverPaladinName)
+      val saveDataPaladin = context.actorSelection(saveDataPaladinRef.path)
+      saveDataPaladin ! CallDataSaverPaladin("Please stand by waiting for data coming!")
+
       // Active search Soldiers to sniff Kafka server message and forward them to crawler Soldiers
       val searchSoldiers = new Array[ActorRef](KafkaConfig.GoogleMapCrawlPreDataTopicPartitionsNum)
       for (soldierID <- 0.until(KafkaConfig.GoogleMapCrawlPreDataTopicPartitionsNum)) searchSoldiers(soldierID) = context.actorOf(Props[SearchSoldier], AkkaConfig.SearchPreDataSoldierName + s"-$soldierID")
