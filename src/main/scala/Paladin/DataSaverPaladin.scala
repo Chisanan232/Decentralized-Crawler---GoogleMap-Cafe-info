@@ -27,12 +27,12 @@ class DataSaverPaladin extends Actor with ActorLogging {
 
 
   private def writeData(keyspace: String, table: String, data: Map[String, Any]): Unit = {
-    val sparkRDDData = this.sc.parallelize(Seq())
+    val sparkRDDData = this.sc.parallelize(data.values.toList.toSeq)
     val columns = table match {
-      case Basic.toString => SomeColumns("isClosed", "title", "address", "phone", "url", "businessHours", "rating", "googlemap", "id", "createdAt")
-      case Services.toString => SomeColumns("services", "googlemap", "id", "createdAt")
-      case Comments.toString => SomeColumns("comments", "googlemap", "id", "createdAt")
-      case Images.toString => SomeColumns("photos", "googlemap", "id", "createdAt")
+      case "Basic" => SomeColumns("isClosed", "title", "address", "phone", "url", "businessHours", "rating", "googlemap", "id", "createdAt")
+      case "Services" => SomeColumns("services", "googlemap", "id", "createdAt")
+      case "Comments" => SomeColumns("comments", "googlemap", "id", "createdAt")
+      case "Images" => SomeColumns("photos", "googlemap", "id", "createdAt")
       case _ => SomeColumns("key", "value")
     }
     sparkRDDData.saveToCassandra(keyspace, table, columns)
