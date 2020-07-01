@@ -35,7 +35,7 @@ class CrawlSoldier extends Actor with ActorLogging {
       // Get the result (cafe info in GoogleMap) and save it to database 'Cassandra'
       println(runningResult)
       // Send the data back to the Paladin to write to database
-      context.parent ! RunningTaskResult("Here is the crawl-result data.", runningResult)
+      context.parent ! RunningTaskResult("Here is the crawl-result data.", Basic, runningResult)
 
   }
 
