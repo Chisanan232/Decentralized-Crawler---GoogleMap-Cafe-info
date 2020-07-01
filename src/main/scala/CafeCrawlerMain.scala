@@ -8,7 +8,7 @@ import akka.actor.{ActorSystem, Props}
 
 object CafeCrawlerMain extends App {
 
-  val system = ActorSystem("GoogleMapCafeCrawler")
+  val system = ActorSystem(AkkaConfig.SystemName)
   val kingActor = system.actorOf(Props[CafeKing], AkkaConfig.CafeKingName)
   kingActor ! CrawlTarget("", "")
 
