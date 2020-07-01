@@ -27,7 +27,7 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
     // Cassandra
     "com.lightbend.akka" %% "akka-stream-alpakka-cassandra" % AkkaCassandraVersion,
-    "com.datastax.cassandra" % "cassandra-driver-core" % "4.0.0",
+    "com.datastax.cassandra" % "cassandra-driver-core" % "3.6.0",
     "com.datastax.spark" %% "spark-cassandra-connector" % "2.5.0",
     // Kafka
     "org.apache.kafka" %% "kafka" % KafkaVersion,
