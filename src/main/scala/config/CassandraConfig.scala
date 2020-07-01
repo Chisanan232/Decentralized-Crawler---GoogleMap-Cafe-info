@@ -6,4 +6,6 @@ object CassandraConfig {
   val CassandraMaster = "local[*]"
   val CassandraAppName = "Cafe_Cassandra"
 
+  val KeySpace = ""
+
 }
