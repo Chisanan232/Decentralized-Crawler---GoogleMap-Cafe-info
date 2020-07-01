@@ -5,6 +5,7 @@ import Cafe_GoogleMap_Crawler.src.main.scala.config.CassandraConfig
 import com.datastax.driver.core.Cluster
 
 import scala.collection.mutable.ListBuffer
+import scala.util.matching.Regex
 
 
 class DataBaseOps {
@@ -23,7 +24,6 @@ class DataBaseOps {
     val tables = tablesInfo.toString.split(";,")
 
     var newTablesInfo = new ListBuffer[String]()
-
     for((ele, index) <- tables.zipWithIndex) {
       if (index.equals(0)) {newTablesInfo += ele.toString.drop(1)}
       else if (index.equals(newTables.length - 1)) {newTablesInfo += ele.toString.filterNot(";]".toSet)}
@@ -31,6 +31,21 @@ class DataBaseOps {
     }
 
     newTablesInfo.toList
+  }
+
+
+  def getTablesName(keyspace: String): List[String] = {
+    val tablesInfo = this.cluster.getMetadata().getKeyspace(keyspace).getTables()
+
+    val format = Regex.quote(keyspace) + "\\.\\w{1,256} \\(" r
+    val tablesName = format.findAllIn(tablesInfo.toString)
+
+    val tablesNameList = new ListBuffer[String]()
+    tablesName.foreach(ele => {
+       tablesNameList += ele.split("\\.").apply(1).split(" \\(")apply(0)
+    })
+    
+    tablesNameList.toList
   }
 
 }
