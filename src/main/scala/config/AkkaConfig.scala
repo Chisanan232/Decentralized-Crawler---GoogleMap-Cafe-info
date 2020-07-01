@@ -1,6 +1,10 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.config
 
+import Cafe_GoogleMap_Crawler.src.main.scala.JsonFile
+
 object AkkaConfig {
+
+  var CrawlSaver = JsonFile
 
   val CrawlerNumber = 10
   val BasicCrawlerNumber = 0
@@ -24,11 +28,5 @@ object AkkaConfig {
   val CafeServiceSoldierName = "Cafe-Services-Soldier"
   val CafeCommentsSoldierName = "Cafe-Comments-Soldier"
   val CafeImagesSoldierName = "Cafe-Images-Soldier"
-
-  var CafeKingPath = ""
-  var CafeBasicPaladinPath = ""
-  var CafeServicePaladinPath = ""
-  var CafeCommentsPaladinPath = ""
-  var CafeImagesPaladinPath = ""
 
 }
