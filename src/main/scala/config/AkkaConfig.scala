@@ -8,7 +8,7 @@ object AkkaConfig {
   val CommentsCrawlerNumber = 0
   val ImagesCrawlerNumber = 0
 
-  val SystemName = ""
+  val SystemName = "GoogleMapCafeCrawler"
 
   val CafeKingName = "Cafe-King"
   val CafeDistributePaladinName = "Cafe-Distribute-Paladin"
