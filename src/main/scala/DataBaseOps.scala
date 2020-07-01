@@ -49,7 +49,7 @@ class DataBaseOps {
   }
 
 
-  def createTable(keyspace: String, name: String): Boolean = {
+  def createTable(keyspace: String, name: String): Unit = {
     val session = this.cluster.connect(keyspace)
 
     val SQLCmd = s"CREATE TABLE $name (" +
@@ -58,6 +58,15 @@ class DataBaseOps {
       s") ;"
 
     session.execute()
+  }
+
+
+  def deleteTable(keyspace: String, name: String): Unit = {
+    val session = this.cluster.connect(keyspace)
+
+    val SQLCmd = s"DROP TABLE $name ;"
+
+    session.execute(SQLCmd)
   }
 
 }
