@@ -87,6 +87,15 @@ class DataSource {
   }
 
 
+  def saveDataToCassandra(keyspace: String, table: String, data: DataFrame): Unit = {
+
+    // Save data to database Cassandra methods
+    // https://stackoverflow.com/questions/41248269/inserting-data-into-cassandra-table-using-spark-dataframe
+
+    data.write.format("org.apache.spark.sql.cassandra").options(Map("keyspace" -> keyspace, "table" -> table)).save()
+  }
+
+
   def closeSpark(): Unit = {
     /*
     https://stackoverflow.com/questions/50504677/java-lang-interruptedexception-when-creating-sparksession-in-scala
