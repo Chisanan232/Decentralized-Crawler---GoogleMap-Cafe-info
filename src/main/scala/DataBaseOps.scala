@@ -69,4 +69,9 @@ class DataBaseOps {
     session.execute(SQLCmd)
   }
 
+
+  def closeSession(): Unit = {
+    this.cluster.close()
+  }
+
 }
