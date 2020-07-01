@@ -44,8 +44,20 @@ class DataBaseOps {
     tablesName.foreach(ele => {
        tablesNameList += ele.split("\\.").apply(1).split(" \\(")apply(0)
     })
-    
+
     tablesNameList.toList
+  }
+
+
+  def createTable(keyspace: String, name: String): Boolean = {
+    val session = this.cluster.connect(keyspace)
+
+    val SQLCmd = s"CREATE TABLE $name (" +
+      s"column1 int , " +
+      s"column2 int" +
+      s") ;"
+
+    session.execute()
   }
 
 }
