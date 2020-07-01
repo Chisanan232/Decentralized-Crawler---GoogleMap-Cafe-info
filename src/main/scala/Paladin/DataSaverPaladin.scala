@@ -27,7 +27,11 @@ class DataSaverPaladin extends Actor with ActorLogging {
 
 
   private def writeData(keyspace: String, table: String, data: Map[String, Any]): Unit = {
-    val sparkRDDData = this.sc.parallelize(data.values.toList.toSeq)
+    // 1. Define a Seq type value
+    // 2. Parse the target value to filter data we want
+    // 3. Add into Seq type value
+    // 4. parallelize by Spark method
+    val sparkRDDData = this.sc.parallelize()
     val columns = table match {
       case "Basic" => SomeColumns("isClosed", "title", "address", "phone", "url", "businessHours", "rating", "googlemap", "id", "createdAt")
       case "Services" => SomeColumns("services", "googlemap", "id", "createdAt")
