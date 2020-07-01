@@ -52,17 +52,14 @@ class DataBaseOps {
   def createTable(keyspace: String, name: String, part: CrawlPart): Unit = {
     val session = this.cluster.connect(keyspace)
 
-    val SQLCmd = s"CREATE TABLE $name (" +
-      s"column1 int , " +
-      s"column2 int" +
-      s") ;"
-
     val columns = part.toString match {
-      case "Basic" => "\"isClosed\", title, address, phone, url, \"businessHours\", rating, googlemap, id, \"createdAt\""
-      case "Services" => "services, googlemap, id, \"createdAt\""
-      case "Comments" => "comments, googlemap, id, \"createdAt\""
-      case "Images" => "photos, googlemap, id, \"createdAt\""
+      case "Basic" => "\"isClosed\" boolean , title text , address text , phone text , url text , \"businessHours\", rating"
+      case "Services" => "services"
+      case "Comments" => "comments"
+      case "Images" => "photos list<text>"
     }
+
+    val SQLCmd = s"CREATE TABLE $name ($columns , googlemap , id uuid , \"createdAt\" int) ;"
 
     session.execute(SQLCmd)
   }
