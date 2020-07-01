@@ -26,7 +26,7 @@ class DataBaseOps {
     var newTablesInfo = new ListBuffer[String]()
     for((ele, index) <- tables.zipWithIndex) {
       if (index.equals(0)) {newTablesInfo += ele.toString.drop(1)}
-      else if (index.equals(newTables.length - 1)) {newTablesInfo += ele.toString.filterNot(";]".toSet)}
+      else if (index.equals(tables.length - 1)) {newTablesInfo += ele.toString.filterNot(";]".toSet)}
       else {newTablesInfo += ele}
     }
 
@@ -49,7 +49,7 @@ class DataBaseOps {
   }
 
 
-  def createTable(keyspace: String, name: String): Unit = {
+  def createTable(keyspace: String, name: String, part: CrawlPart): Unit = {
     val session = this.cluster.connect(keyspace)
 
     val SQLCmd = s"CREATE TABLE $name (" +
@@ -57,7 +57,14 @@ class DataBaseOps {
       s"column2 int" +
       s") ;"
 
-    session.execute()
+    val columns = part.toString match {
+      case "Basic" => "\"isClosed\", title, address, phone, url, \"businessHours\", rating, googlemap, id, \"createdAt\""
+      case "Services" => "services, googlemap, id, \"createdAt\""
+      case "Comments" => "comments, googlemap, id, \"createdAt\""
+      case "Images" => "photos, googlemap, id, \"createdAt\""
+    }
+
+    session.execute(SQLCmd)
   }
 
 
