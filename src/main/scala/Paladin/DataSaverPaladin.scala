@@ -65,8 +65,21 @@ class DataSaverPaladin extends Actor with ActorLogging {
     case RunningTaskResult(content, part, data) =>
       log.info("Receive the crawl-result data!")
 
-      val mapData = this.parseData(data)
-      this.writeData("target_keyspace", part.toString, data)
+      val tableName = part.toString match {
+        case "Basic" => "cafe_basic"
+        case "Services" => "cafe_services"
+        case "Comments" => "cafe_comments"
+        case "Images" => "cafe_images"
+        case _ => "none"
+      }
+
+      AkkaConfig.CrawlSaverPattern.toString match {
+        case "JsonFile" =>
+          log.info("Will write data to file as Json type file.")
+        case "DataBase" =>
+          log.info("Will write data to database -- Cassandra.")
+          this.saveData(CassandraConfig.Keyspace, tableName, part, data)
+      }
 
   }
 
