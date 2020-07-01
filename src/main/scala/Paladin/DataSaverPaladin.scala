@@ -1,14 +1,10 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.Paladin
 
-import Cafe_GoogleMap_Crawler.src.main.scala.{Basic, Services, Comments, Images}
-import Cafe_GoogleMap_Crawler.src.main.scala.DataBaseOps
+import Cafe_GoogleMap_Crawler.src.main.scala.{Basic, Comments, CrawlPart, DataBaseOps, DataSource, Images, Services}
 import Cafe_GoogleMap_Crawler.src.main.scala.config._
-
 import org.json4s.jackson.JsonMethods._
 import org.json4s.DefaultFormats
-
 import akka.actor.{Actor, ActorLogging}
-
 import org.apache.spark.{SparkConf, SparkContext}
 import com.datastax.spark.connector._
 
@@ -29,9 +25,12 @@ class DataSaverPaladin extends Actor with ActorLogging {
   }
 
   // Method 2
+  private val ds = new DataSource
   private val dbo = new DataBaseOps
 
   private def writeData(keyspace: String, table: String, data: String): Unit = {
+    // Method 1 to save data  to database Cassandra
+    // Not finish
     // 1. Define a Seq type value
     // 2. Parse the target value to filter data we want
     // 3. Add into Seq type value
@@ -46,6 +45,14 @@ class DataSaverPaladin extends Actor with ActorLogging {
       case _ => SomeColumns("key", "value")
     }
 //    sparkRDDData.saveToCassandra(keyspace, table, columns)
+  }
+
+
+  private def saveData(keyspace: String, table: String, part: CrawlPart, data: String): Unit = {
+    // Method 2 to save data  to database Cassandra
+
+    if (this.dbo.getTablesName(keyspace).contains(table).equals(false)) this.dbo.createTable(keyspace, table, part)
+    this.ds.saveDataToCassandra(keyspace, table, this.ds.convertJsonToDF(data))
   }
 
 
