@@ -17,6 +17,10 @@ class DataSource {
     .master("local[*]")
     .getOrCreate()
 
+  // How to import spark.implicits?
+  // https://stackoverflow.com/questions/39968707/spark-2-0-missing-spark-implicits
+  import spark.implicits._
+
   private def readData(): sql.DataFrame = {
 //    spark.read.option("multiline", "true").json(this.DataFilePath)
     this.spark.read.json(spark.sparkContext.wholeTextFiles(this.DataFilePath).values)
