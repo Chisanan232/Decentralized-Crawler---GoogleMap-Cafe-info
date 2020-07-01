@@ -1,7 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala
 
 import org.apache.spark.{SparkContext, sql}
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 
 
@@ -74,6 +74,16 @@ class DataSource {
     //  println(t.withColumn("TestColumn", map(tt:_*)).show(false))
     val dfMapData = dfColumns.withColumn("crawlPreData", map(dfColumnsData:_*)).toDF()
     dfMapData.select("crawlPreData").rdd.map(_.toSeq.toList).collect().flatten.toList
+  }
+
+
+  def convertJsonToDF(data: String): DataFrame = {
+
+    // How to convert Json type data to SQL DataFrame via Spark
+    // https://stackoverflow.com/questions/38271611/how-to-convert-json-string-to-dataframe-on-spark
+    // http://spark.apache.org/docs/2.2.0/sql-programming-guide.html#json-datasets
+
+    Seq(data).toDF()
   }
 
 
