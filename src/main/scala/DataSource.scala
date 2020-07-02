@@ -35,6 +35,8 @@ class DataSource {
   // https://stackoverflow.com/questions/39968707/spark-2-0-missing-spark-implicits
   import spark.implicits._
 
+  private val fileIO = new FileOpts
+
   private def readData(): sql.DataFrame = {
 //    spark.read.option("multiline", "true").json(this.DataFilePath)
 //    this.spark.read.json(spark.sparkContext.wholeTextFiles(this.DataFilePath).values)
@@ -102,9 +104,17 @@ class DataSource {
   }
 
 
-  def saveToJsonFile(table: String, data: DataFrame): Unit = {
+  implicit def intToString(index: Int): String = index.toString
+
+  def saveToJsonFile(table: String, index: String, data: DataFrame): Unit = {
     // 1. Check whether the target directory path exist or not
+    val tableDir = this.fileIO.DataSaverPath + table
+    this.fileIO.ensureDirPathExist(tableDir)
+    val jsonFile = tableDir + s"/index_$index.json"
+    Files.createFile(Paths.get(jsonFile))
+
     // 2. Save data into file in target directory
+    data.write.json(jsonFile)
   }
 
 
