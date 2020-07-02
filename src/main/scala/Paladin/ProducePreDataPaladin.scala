@@ -9,7 +9,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 class ProducePreDataPaladin extends Actor with ActorLogging {
 
   var allProduceTaskNum: Int = 0
-  var currentProduceTaskDone = 0
+  var currentProduceTaskDone: Int = 0
 
   override def receive: Receive = {
 
