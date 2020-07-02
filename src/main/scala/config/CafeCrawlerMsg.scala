@@ -38,6 +38,7 @@ case class ImportCafeCrawlerConditions(content: String, cafePreData: List[Any]) 
 
 // Basic Paladin
 
+
 // Services Paladin
 
 
@@ -45,6 +46,10 @@ case class ImportCafeCrawlerConditions(content: String, cafePreData: List[Any]) 
 
 
 // Images Paladin
+
+
+// DataSaver Paladin
+case class SaveFinish(content: String) extends CafeCrawlerMsg
 
 
 // Pre-Data Soldiers
