@@ -16,7 +16,7 @@ case class CallCafeBasicPaladin(content: String) extends CafeCrawlerMsg
 case class CallCafeServicesPaladin(content: String) extends CafeCrawlerMsg
 case class CallCafeCommentsPaladin(content: String) extends CafeCrawlerMsg
 case class CallCafeImagesPaladin(content: String) extends CafeCrawlerMsg
-case class CallDataSaverPaladin(content: String) extends CafeCrawlerMsg
+case class CallDataSaverPaladin(content: String, tasksNum: Int) extends CafeCrawlerMsg
 
 case class CrawlCafeBasic(content: String) extends CafeCrawlerMsg
 case class CrawlCafeServices(content: String) extends CafeCrawlerMsg
