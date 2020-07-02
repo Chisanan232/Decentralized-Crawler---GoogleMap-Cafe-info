@@ -1,5 +1,4 @@
 # Decentralized Crawler - GoogleMap Cafe info
-<br>
 
 ### Description
 A decentralized crawler which target to crawl GoogleMap cafe data (shop information). <br>
@@ -78,18 +77,19 @@ Receive task and essentailly work the content. Here we also has 3 different work
 
 ### AKKA with Kafka Relationship 
 
-Understand AKKA Actors tree Relationship and design. Let's talk about AKKA with Kafka. Kafka is a one of greatest software product! Why we choice it to use in this project? Kafka broken be a very important role here, that's "Distributer". Please refer to the below AKKA with Kafka Relationship <br>
+Understand AKKA Actors tree Relationship and design. Let's talk about AKKA with Kafka Relationship. Kafka is a one of greatest software product! Why we choice it to use in this project? Kafka broken be a very important role here, that's "Distributer". Please refer to the below AKKA with Kafka Relationship <br>
 <br>
  
 ![](https://github.com/Chisanan232/Decentralized-Crawler---GoogleMap-Cafe-info/raw/master/docs/imgs/GoogleMap_Cafe_Decentralized_Crawler_Diagram-Kafka_Diagram.png)
  
 <br>
 
-We let King to be the all actors management and Paladins to be the management and "Distributer" (Paladin also is but it's a little bit different with Kafka, let us talk about it later). Some soldiers which be build up by Paladins is the "Kafka Role". "Pre-Data Soldiers" is Kafka Producer and "Search Soldier" is Kafka Consumer. First, "Search Soldier" will keep consuming the message even it has nothing in topic. If it get something, send it to "Crawl Soldier" as AKKA actor message immediately. For "Pre-Data Soldier" part, it start to receive task content (Pre-Data) and produce it to target topic which be sniffed by "Search Soldier" until finish the data. <br>
+We let King to be the all actors management and Paladins to be the management and "Distributer" (Paladin also is but it's a little bit different with Kafka, let us talk about it later). Some soldiers which be build up by Paladins is the "Kafka Role". "Pre-Data Soldiers" is Kafka Producer and "Search Soldier" is Kafka Consumer. <br>
+First, "Search Soldier" will keep consuming the message even it has nothing in topic. If it get something, send it to "Crawl Soldier" as AKKA actor message immediately. For "Pre-Data Soldier" part, it start to receive task content (Pre-Data) and produce it to target topic which be sniffed by "Search Soldier" until finish the data. <br>
 
 #### Benefits
 ##### Re-Balance <br>
-Kafka could auto-distribute the partitions of topic to consumers. You could set any number of consumers you want to receive target message and doesn't need to do other anything.
+Kafka could auto-distribute the partitions of topic to consumers. You could set any number of consumers you want to receive target message and don't need to do other anything.
 
 ##### Data is Unique <br>
 I think this is the most important feature of Kafka. That's help developer deeply decrease development complexity.
@@ -101,7 +101,7 @@ You could find that no matter which one type of Soldiers (Worker), it has respon
 
 #### Crawler Flow Chart
 
-Here is the GoogleMap cafe crawler program flow chart.
+Here is the GoogleMap cafe crawler program flow chart. You could understand the full program process how to run and the software architecture.
 
 <br>
  
