@@ -30,7 +30,9 @@ Databsase: Cassandra (Datastax driver-core version: 3.6.0, Spark connector versi
  <br>
 In this project, no matter what thing you want to do, all things, al logic-implements base on one thing --- AKKA. Why? Because you want to build your code to be a decentralized system, right? So we need to use AKKA feature to do this. However, before we do that, let us build a stand-alone mode code first. Below is the AKKA actors tree architecture we use in the project. <br>
  <br>
+ 
 ![](https://github.com/Chisanan232/Decentralized-Crawler---GoogleMap-Cafe-info/raw/master/docs/imgs/GoogleMap_Cafe_Decentralized_Crawler_Diagram-Akka_Actors_Tree.png)
+ 
  <br>
 
 Actors Tree Relationship like: <br>
