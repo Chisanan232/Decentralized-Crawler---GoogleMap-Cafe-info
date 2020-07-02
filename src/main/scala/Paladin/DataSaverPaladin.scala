@@ -11,6 +11,9 @@ import com.datastax.spark.connector._
 
 class DataSaverPaladin extends Actor with ActorLogging {
 
+  var TotalTaskNum: Int = 0
+  var CurrentTaskNum: Map[String, Int] = Map[String, Int]()
+
   // Save data to database Cassandra has 2 methods
   // Method 1
   private val conf = new SparkConf(true)
@@ -58,8 +61,9 @@ class DataSaverPaladin extends Actor with ActorLogging {
 
   override def receive: Receive = {
 
-    case CallDataSaverPaladin =>
-      log.info("Got it!")
+    case CallDataSaverPaladin(content, tasksNum) =>
+      this.TotalTaskNum = tasksNum
+      log.info("Got it! Will wait for data coming ...")
 
 
     case RunningTaskResult(content, part, data) =>
@@ -73,10 +77,16 @@ class DataSaverPaladin extends Actor with ActorLogging {
         case _ => "none"
       }
 
+      // Initial current task number
+      if (this.CurrentTaskNum.keys.toList.contains(tableName).equals(false)) this.CurrentTaskNum += (tableName -> 0)
+
       AkkaConfig.CrawlSaverPattern.toString match {
         case "JsonFile" =>
           log.info("Will write data to file as Json type file.")
-          this.ds.saveDataToJsonFile(tableName, idnex, this.ds.convertJsonToDF(data))
+          val index = this.CurrentTaskNum(tableName)
+          this.ds.saveDataToJsonFile(tableName, index, this.ds.convertJsonToDF(data))
+          // Update the index
+          this.CurrentTaskNum += (tableName, index + 1)
           sender() ! SaveFinish
         case "DataBase" =>
           log.info("Will write data to database -- Cassandra.")
