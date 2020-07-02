@@ -7,13 +7,24 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 
 
+class FileOpts {
+
+  val DataSaverPath = "src/main/scala/Cafe_GoogleMap_Crawler/crawl-data/"
+
+  def ensureDirPathExist(dirPath: String): Unit = {
+    val dir = Paths.get(this.DataSaverPath + dirPath)
+    if (! Files.exists(dir)) Files.createDirectory(dir)
+  }
+
+}
+
+
 /***
  * Original data operators
  */
 class DataSource {
 
   val DataFilePath = "src/main/scala/Cafe_GoogleMap_Crawler/src/resources/googlemapList-main.json"
-  val DataSaverPath = "src/main/scala/Cafe_GoogleMap_Crawler/crawl-data/"
 
   val spark: SparkSession = SparkSession.builder()
     .appName("Cafe in GoogleMap decentralized crawler")
@@ -92,6 +103,8 @@ class DataSource {
 
 
   def saveToJsonFile(table: String, data: DataFrame): Unit = {
+    // 1. Check whether the target directory path exist or not
+    // 2. Save data into file in target directory
   }
 
 
@@ -110,15 +123,6 @@ class DataSource {
      */
     this.spark.sparkContext.stop()
     this.spark.close()
-  }
-
-}
-
-
-class FileOpts {
-
-  def chkDirPath(dirPath: String): Boolean = {
-    Files.exists(Paths.get(dirPath))
   }
 
 }
