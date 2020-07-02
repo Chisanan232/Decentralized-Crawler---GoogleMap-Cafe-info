@@ -114,6 +114,7 @@ class DataSource {
     Files.createFile(Paths.get(jsonFile))
 
     // 2. Save data into file in target directory
+    // https://sparkbyexamples.com/spark/spark-read-and-write-json-file/
     data.write.json(jsonFile)
   }
 
