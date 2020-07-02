@@ -104,9 +104,7 @@ class DataSource {
   }
 
 
-  implicit def intToString(index: Int): String = index.toString
-
-  def saveDataToJsonFile(table: String, index: String, data: DataFrame): Unit = {
+  def saveDataToJsonFile(table: String, index: Int, data: DataFrame): Unit = {
     // 1. Check whether the target directory path exist or not
     val tableDir = this.fileIO.DataSaverPath + table
     this.fileIO.ensureDirPathExist(tableDir)
