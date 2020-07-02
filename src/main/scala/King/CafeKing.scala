@@ -25,6 +25,8 @@ class CafeKing extends Actor with ActorLogging{
   var CafeLngs: List[Any] = List[Any]()
   var CafePreData: List[Any] = List[Any]()
 
+  var CurrentFinishTask: Int = 0
+
   private final def getActorRef(actorName: String): ActorRef = {
     actorName match {
       case AkkaConfig.CafeBasicPaladinName => context.actorOf(Props[CafeBasicInfo], AkkaConfig.CafeBasicPaladinName)
@@ -117,6 +119,15 @@ class CafeKing extends Actor with ActorLogging{
       val disPaladinRef = context.actorOf(Props[ProducePreDataPaladin], AkkaConfig.CafeDistributePaladinName)
       val distributePaladin = context.actorSelection(disPaladinRef.path)
       distributePaladin ! DistributePreData("Here are the all pre-data which be needed for cafe crawlers.", this.CafeNum, this.CafePreData)
+
+
+    case SaveFinish =>
+      log.info("Save data successfully!")
+      this.CurrentFinishTask += 1
+      if (this.CurrentFinishTask.equals(this.CafeNum)) {
+        log.info("Finish the project all tasks!")
+        context.system.terminate()
+      }
 
   }
 
