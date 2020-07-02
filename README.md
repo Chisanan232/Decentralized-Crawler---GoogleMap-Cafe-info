@@ -5,13 +5,12 @@ A decentralized crawler which target to crawl GoogleMap cafe data (shop informat
 <br>
 
 ### Motivation
-This project exist for my side project about ... maybe you should think it like "Coffee Google". <br>
-We need to integrate all data which from different sources and must to crawl data from internet. <br>
-However, general crawler is too slow to get target data we want, especially we crawl data with Selenium. <br>
+This program for my responsibility of crawling data from internet. It's a part of side project about ... maybe you could think it like "Coffee Google". <br>
+We need to integrate all data which from different sources and must to crawl data from internet. However, general crawler program is too slow to get target data we want, especially we crawl data with Selenium. <br>
 <br>
 
 ### Skills
-For this project, it be classified 2 parts. One is crawler, another one is other prcesses logic-implements (like Multiple Actors relationship, Send message mechanism and build Kafka producer, consumer, etc). <br>
+For this project, I classify it to 2 parts. One is crawler, another one is other prcesses logic-implements (like Multiple Actors relationship, Send message mechanism and build Kafka producer, consumer, etc). <br>
 
 #### Crawler
 Language: Python <br>
@@ -28,7 +27,7 @@ Databsase: Cassandra (Datastax driver-core version: 3.6.0, Spark connector versi
 
 ### AKKA Actors Tree Relationsahip 
 
-In this project, no matter what thing you want to do, all things, al logic-implements base on one thing --- AKKA. Why? Because you want to build your code to be a decentralized system, right? So we need to use AKKA feature to do this. However, before we do that, let us build a stand-alone mode code first. Below is the AKKA actors tree architecture we use in the project. <br>
+In this project, no matter what thing you want to do, all things, al logic-implements base on one thing --- AKKA. Why? Because you want to build your code to be a decentralized system. So we need to use AKKA feature to do this. However, before we do that, let us build a stand-alone mode code first. Below is the AKKA actors tree architecture we use in the project. <br>
  <br>
  
 ![](https://github.com/Chisanan232/Decentralized-Crawler---GoogleMap-Cafe-info/raw/master/docs/imgs/GoogleMap_Cafe_Decentralized_Crawler_Diagram-Akka_Actors_Tree.png)
@@ -39,7 +38,7 @@ Actors Tree Relationship like: <br>
 Master (King) ---> Worker Leaders (Paladins) ---> Workers (Soldiers) <br>
  <br>
 * Master (King) <br>
-The boss of all actors. It builds and manages worker leaders, also, it get the pre-data in the prestart status.
+The boss of all actors. It builds and manages worker leaders, also, it get the pre-data in the prestart actor status.
   * Import Pre-data
   * Build worker leaders and send task to let them ready to stand by (wait for pre-data).
 
@@ -57,7 +56,8 @@ Build workers and distribute job to them to work. And it has 3 different worker 
   Receive the Pre-Data from King (master) and distribute to workers. <br>
   
   * Data-Saver Paladin <br>
-  Receive all data we got from crawl soldiers and save it to database or files.  <br>
+  Receive all data we got from crawl soldiers and save it to database or files. <br>
+  This Paladin is independence even it doesn't have any Soldiers be built under it because its main job is integrating all of data which be send by all "Crawl Soldiers" in any time (immediatelly). In other words, it guarantee the connector session is unique between database and multiple actors. <br>
   
 
 * Workers (Soldiers) <br>
@@ -86,6 +86,9 @@ Understand AKKA Actors tree Relationship and design. Let's talk about AKKA with 
 
 We let King to be the all actors management and Paladins to be the management and "Distributer" (Paladin also is but it's a little bit different with Kafka, let us talk about it later). Some soldiers which be build up by Paladins is the "Kafka Role". "Pre-Data Soldiers" is Kafka Producer and "Search Soldier" is Kafka Consumer. <br>
 First, "Search Soldier" will keep consuming the message even it has nothing in topic. If it get something, send it to "Crawl Soldier" as AKKA actor message immediately. For "Pre-Data Soldier" part, it start to receive task content (Pre-Data) and produce it to target topic which be sniffed by "Search Soldier" until finish the data. <br>
+
+#### Addition of "Distributer"
+In Kafka "Distributer" point, it for Kafka consumers. But in AKKA actor role Paladin "Distributer", it for distribute data to multiple AKKA actor role Soldier (Pre-Data Paladin) or build up multiple AKKA actors to do something (All Paladin except Data-Saver Paladin). The distribute objects between them are different.
 
 #### Benefits
 ##### Re-Balance <br>
