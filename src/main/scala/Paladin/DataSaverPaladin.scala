@@ -76,6 +76,7 @@ class DataSaverPaladin extends Actor with ActorLogging {
       AkkaConfig.CrawlSaverPattern.toString match {
         case "JsonFile" =>
           log.info("Will write data to file as Json type file.")
+          this.ds.saveDataToJsonFile(tableName, idnex, this.ds.convertJsonToDF(data))
           sender() ! SaveFinish
         case "DataBase" =>
           log.info("Will write data to database -- Cassandra.")
