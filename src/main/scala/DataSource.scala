@@ -1,5 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala
 
+import java.nio.file.{Path, Paths, Files}
+
 import org.apache.spark.{SparkContext, sql}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
@@ -10,7 +12,8 @@ import org.apache.spark.sql.functions._
  */
 class DataSource {
 
-  val DataFilePath = "src/main/resources/googlemapList-main.json"
+  val DataFilePath = "src/main/scala/Cafe_GoogleMap_Crawler/src/resources/googlemapList-main.json"
+  val DataSaverPath = "src/main/scala/Cafe_GoogleMap_Crawler/crawl-data/"
 
   val spark: SparkSession = SparkSession.builder()
     .appName("Cafe in GoogleMap decentralized crawler")
@@ -23,7 +26,8 @@ class DataSource {
 
   private def readData(): sql.DataFrame = {
 //    spark.read.option("multiline", "true").json(this.DataFilePath)
-    this.spark.read.json(spark.sparkContext.wholeTextFiles(this.DataFilePath).values)
+//    this.spark.read.json(spark.sparkContext.wholeTextFiles(this.DataFilePath).values)
+    this.spark.read.json(this.DataFilePath)
   }
 
 
@@ -87,6 +91,10 @@ class DataSource {
   }
 
 
+  def saveToJsonFile(table: String, data: DataFrame): Unit = {
+  }
+
+
   def saveDataToCassandra(keyspace: String, table: String, data: DataFrame): Unit = {
 
     // Save data to database Cassandra methods
@@ -102,6 +110,15 @@ class DataSource {
      */
     this.spark.sparkContext.stop()
     this.spark.close()
+  }
+
+}
+
+
+class FileOpts {
+
+  def chkDirPath(dirPath: String): Boolean = {
+    Files.exists(Paths.get(dirPath))
   }
 
 }
