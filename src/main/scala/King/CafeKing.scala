@@ -25,7 +25,8 @@ class CafeKing extends Actor with ActorLogging{
   var CafeLngs: List[Any] = List[Any]()
   var CafePreData: List[Any] = List[Any]()
 
-  var CurrentFinishTask: Int = 0
+  val CafeAllTableNum = 4
+  var DoneTableNum: Int = 0
 
   private final def getActorRef(actorName: String): ActorRef = {
     actorName match {
@@ -121,12 +122,19 @@ class CafeKing extends Actor with ActorLogging{
       distributePaladin ! DistributePreData("Here are the all pre-data which be needed for cafe crawlers.", this.CafeNum, this.CafePreData)
 
 
-    case SaveFinish =>
+    case SaveFinish(content, currentProcess) =>
       log.info("Save data successfully!")
-      this.CurrentFinishTask += 1
-      if (this.CurrentFinishTask.equals(this.CafeNum)) {
-        log.info("Finish the project all tasks!")
-        context.system.terminate()
+      for ((table, index) <- currentProcess) {
+        // Check one specific table whether all data has been saved or not.
+        if (index.equals(this.CafeNum - 1)) {
+          log.info(s"Finish the table $table data saving!")
+          this.DoneTableNum += 1
+        }
+        // Check whether all table has finish or not.
+        if (this.DoneTableNum.equals(this.CafeAllTableNum)) {
+          log.info("Finish the project all tasks!")
+          context.system.terminate()
+        }
       }
 
   }
