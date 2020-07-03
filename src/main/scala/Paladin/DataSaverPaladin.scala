@@ -86,7 +86,7 @@ class DataSaverPaladin extends Actor with ActorLogging {
           val index = this.CurrentTaskNum(tableName)
           this.ds.saveDataToJsonFile(tableName, index, this.ds.convertJsonToDF(data))
           // Update the index
-          this.CurrentTaskNum += (tableName, index + 1)
+          this.CurrentTaskNum += (tableName -> (index + 1))
           sender() ! SaveFinish
         case "DataBase" =>
           log.info("Will write data to database -- Cassandra.")
