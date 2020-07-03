@@ -49,7 +49,7 @@ case class ImportCafeCrawlerConditions(content: String, cafePreData: List[Any]) 
 
 
 // DataSaver Paladin
-case class SaveFinish(content: String) extends CafeCrawlerMsg
+case class SaveFinish(content: String, currentProcess: Map[String, Int]) extends CafeCrawlerMsg
 
 
 // Pre-Data Soldiers
