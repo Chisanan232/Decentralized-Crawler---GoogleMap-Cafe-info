@@ -24,7 +24,7 @@ class FileOpts {
  */
 class DataSource {
 
-  val DataFilePath = "src/main/scala/Cafe_GoogleMap_Crawler/src/resources/googlemapList-main.json"
+  val DataFilePath = "src/main/scala/Cafe_GoogleMap_Crawler/src/main/resources/googlemapList-main.json"
 
   val spark: SparkSession = SparkSession.builder()
     .appName("Cafe in GoogleMap decentralized crawler")
