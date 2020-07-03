@@ -16,6 +16,8 @@ import akka.pattern.ask
 
 class CafeKing extends Actor with ActorLogging{
 
+  import context.dispatcher
+
   val check = new CheckMechanism
 
   var CafeNum: Int = 0
