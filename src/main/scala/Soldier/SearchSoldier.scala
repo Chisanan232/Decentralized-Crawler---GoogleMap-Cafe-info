@@ -1,6 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.Soldier
 
 import Cafe_GoogleMap_Crawler.src.main.scala.config._
+import Cafe_GoogleMap_Crawler.src.main.scala.CheckMechanism
 import Cafe_GoogleMap_Crawler.src.main.scala.{CrawlPart, Basic, Services, Comments, Images}
 import Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism.DataConsumerManagement
 
@@ -9,15 +10,20 @@ import scala.concurrent.duration._
 import scala.util.{Success, Failure}
 
 import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 import org.json4s.jackson.JsonMethods._
 import org.json4s.DefaultFormats
 
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import akka.actor.{Actor, ActorLogging}
+import akka.pattern.ask
 import akka.util.Timeout
 
 
 class SearchSoldier extends Actor with ActorLogging {
+
+  private val check = new CheckMechanism
+  var UnderWaitDataList = new ListBuffer[Map[String, String]]()
 
   var SoldierID: Int = 0
 
@@ -49,7 +55,22 @@ class SearchSoldier extends Actor with ActorLogging {
       val (paladin, soldier) = this.getActorSelection(part)
       val soldierID = this.SoldierID
       context.system.actorSelection(s"user/$king/$paladin/$soldier-$soldierID").resolveOne().onComplete{
-        case Success(actorRef) => actorRef ! CrawlTask("Here is the crawl pre-data.", crawlPreData)
+        case Success(actorRef) =>
+          // Ensure that crawl soldier has done previous task.
+          val answer = actorRef ? AreYouDonePreviousTask
+          val checksum = this.check.waitAnswer(answer, actorRef.path.toString)
+          if (checksum.toString.equals("Yes")) {
+            val data = if (this.UnderWaitDataList.isEmpty.equals(false)) {
+              this.UnderWaitDataList.toList.apply(1)
+            } else {
+              crawlPreData
+            }
+            actorRef ! CrawlTask("Here is the crawl pre-data.", data)
+          } else {
+            // Save data to listbuffer to wait for previous task has done
+            UnderWaitDataList += crawlPreData
+            // Keep working after save data
+          }
         case Failure(ex) =>
           if (WorkStatus.Working.equals(false)) {
             log.error(s"The AKKA actor path 'user/$king/$paladin/$soldier-$soldierID' doesn't exist! Please check it again.")
