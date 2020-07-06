@@ -26,7 +26,7 @@ class GoogleMapCafeBasic(GoogleMapOperator):
     def chk_cafe_dead(self):
         """
         Check the cafe shutdown or not.
-        :return:
+        :return: A Boolean type value. Return True if target cafe has shutdown. Return False if it doesn't.
         """
 
         try:
@@ -58,16 +58,18 @@ class GoogleMapCafeBasic(GoogleMapOperator):
     def basic_info(self, cafe_googlemap_info):
         """
         Crawl some basic cafe info like name, address, etc.
-        :return:
+        :param cafe_googlemap_info: A dictionary type value which saves all info.
+        :return: A dictionary type value which saves all info.
         """
 
         def find_one_html_eles(ele_locator, index):
             """
             Find the target element locator character content and its a string type value.
             * It has MULTIPLE elements.
-            :param ele_locator:
-            :param index:
-            :return:
+            :param ele_locator: HTML element (CSS Selector).
+            :param index: The index of the HTML elements list.
+            :return: A selenium object which is the index of HTML-elements-list. But it return None type value if it
+                     cannot find the target HTML element.
             """
 
             try:
@@ -81,10 +83,10 @@ class GoogleMapCafeBasic(GoogleMapOperator):
         def __word_day_info(cafe_googlemap_info, day, target_data):
             """
             Filter and get the business hours.
-            :param cafe_googlemap_info:
-            :param day:
-            :param target_data:
-            :return:
+            :param cafe_googlemap_info: A dictionary type value which saves all info.
+            :param day: A string type value. One day of week like Monday, Saturday, etc. But parameter value should be Monday -> "mon", Saturday -> "sat", etc.
+            :param target_data: A string type value. The open-time in a day.
+            :return: A dictionary type value which save all business hours info.
             """
 
             cafe_open_time = re.findall(r"[0-9]{1,3}:[0-9]{1,3}", str(target_data))
@@ -103,23 +105,6 @@ class GoogleMapCafeBasic(GoogleMapOperator):
             cafe_googlemap_info["businessHours"][day]["isDayOff"] = day_off
             return cafe_open_time
 
-        def get_or_pass(function, args):
-            """
-            Do something and pass this procedure if it got failure.
-            :param function:
-            :param args:
-            :return:
-            """
-
-            try:
-                cafe_info = function(args)
-                if cafe_info is None:
-                    cafe_info = True
-                return cafe_info
-            except NoSuchElementException as e:
-                print("[WARNING] Doesn't have this information in this cafe.")
-                return None
-
         def determine_url_or_phone():
             """
             Determine the content of target HTML element is cafe website or cafe phone number.
@@ -132,7 +117,7 @@ class GoogleMapCafeBasic(GoogleMapOperator):
             # Coffee website URL and phone number
             for index in range((2 - decrease_index), len(cafe_attributes_items)):
                 print("Start check the info ...")
-                coffee_one_item_content = get_or_pass(get_info, index)
+                coffee_one_item_content = super(GoogleMapCafeBasic, self).get_or_pass(get_info, index)
                 print("[DEBUG] coffee_one_item_content: ", coffee_one_item_content)
                 is_number = re.search(r"[0-9]{8,11}", str(coffee_one_item_content).replace(" ", ""))
                 if "." in str(coffee_one_item_content):
@@ -162,7 +147,7 @@ class GoogleMapCafeBasic(GoogleMapOperator):
                             for win in windows:
                                 if win == og_window:
                                     self.browser.switch_to.window(win)
-                        coffee_phone_number = get_or_pass(get_info, index + 1)
+                        coffee_phone_number = super(GoogleMapCafeBasic, self).get_or_pass(get_info, index + 1)
                         return coffee_website, coffee_phone_number
                     else:
                         continue
@@ -170,6 +155,84 @@ class GoogleMapCafeBasic(GoogleMapOperator):
                 coffee_website = None
                 coffee_phone_number = None
                 return coffee_website, coffee_phone_number
+
+        def save_data(cafe_googlemap_info):
+            """
+            Save data as value mapping format.
+            :param cafe_googlemap_info: A dictionary type value which saves all info.
+            :return: A dictionary type value which saves all info.
+            """
+
+            cafe_googlemap_info["title"] = str(coffee_shop_name)
+            cafe_googlemap_info["address"] = str(coffee_address)[3:]
+            cafe_googlemap_info["phone"] = str(coffee_phone_number)
+            cafe_website = str(coffee_website).split(sep="、")[-1]
+            cafe_googlemap_info["url"] = str(cafe_website)
+            cafe_googlemap_info["businessHours"] = {}
+            # Data process about business hours data
+            data_list = coffee_work_time_table.split(sep=";")
+            for d in data_list:
+                d = str(d).split(sep="、")
+                if "星期一" in d[0]:
+                    cafe_open_time = __word_day_info(cafe_googlemap_info, "mon", str(d[1]))
+                    print("mon: ", cafe_open_time)
+                if "星期二" in d[0]:
+                    cafe_open_time = __word_day_info(cafe_googlemap_info, "tue", str(d[1]))
+                    print("tue: ", cafe_open_time)
+                if "星期三" in d[0]:
+                    cafe_open_time = __word_day_info(cafe_googlemap_info, "wed", str(d[1]))
+                    print("wed: ", cafe_open_time)
+                if "星期四" in d[0]:
+                    cafe_open_time = __word_day_info(cafe_googlemap_info, "thu", str(d[1]))
+                    print("thu: ", cafe_open_time)
+                if "星期五" in d[0]:
+                    cafe_open_time = __word_day_info(cafe_googlemap_info, "fri", str(d[1]))
+                    print("fri: ", cafe_open_time)
+                if "星期六" in d[0]:
+                    cafe_open_time = __word_day_info(cafe_googlemap_info, "sat", str(d[1]))
+                    print("sat: ", cafe_open_time)
+                if "星期日" in d[0]:
+                    cafe_open_time = __word_day_info(cafe_googlemap_info, "sun", str(d[1]))
+                    print("sun: ", cafe_open_time)
+
+            cafe_googlemap_info["rating"] = {}
+            cafe_googlemap_info["rating"]["avg"] = str(coffee_start_level)
+            cafe_googlemap_info["rating"]["total"] = str(GoogleMapCafeParam.ALL_COMMENTS)
+            cafe_googlemap_info["rating"]["level"] = {}
+            # Data process about rating detail info
+            for start in each_rate_number:
+                start = str(start).split(sep="、")
+                this_start_level = str(start[0].split(sep=" ")[0])
+                this_start_level_comment_number = start[1].split(sep=" ")[0]
+                print("Start level: ", this_start_level)
+                print("This start level comment number: ", this_start_level_comment_number)
+                cafe_googlemap_info["rating"]["level"][this_start_level] = int(
+                    str(this_start_level_comment_number).replace(",", ""))
+
+            return cafe_googlemap_info
+
+        def show_data(shutdown_checksum):
+            """
+            Display the data.
+            :param shutdown_checksum: A Boolean type value. True means the cafe has shutdown.
+            :return: None
+            """
+
+            if shutdown_checksum is not False:
+                print("============== Cafe Basic Information ==============")
+                print("coffee_shop_name: ", coffee_shop_name)
+                print("coffee_address: ", coffee_address)
+                print("coffee_phone_number: ", coffee_phone_number)
+                print("coffee_website: ", coffee_website)
+            else:
+                print("============== Cafe Basic Information ==============")
+                print("coffee_shop_name: ", coffee_shop_name)
+                print("coffee_address: ", coffee_address)
+                print("coffee_phone_number: ", coffee_phone_number)
+                print("coffee_work_time_table: ", coffee_work_time_table)
+                print("coffee_website: ", coffee_website)
+                print("coffee_start_level: ", coffee_start_level)
+                print("each_rate_number: ", each_rate_number)
 
         cafe_attributes_items = self.browser.find_elements_by_css_selector("div.ugiz4pqJLAG__primary-text.gm2-body-2")
         print("[DEBUG] len of cafe_attributes_items: ", len(cafe_attributes_items))
@@ -183,7 +246,7 @@ class GoogleMapCafeBasic(GoogleMapOperator):
 
         get_info = lambda index: find_one_html_eles("div.ugiz4pqJLAG__primary-text.gm2-body-2", index)
         # Coffee address
-        coffee_address = get_or_pass(get_info, 0)
+        coffee_address = super(GoogleMapCafeBasic, self).get_or_pass(get_info, 0)
         # Cafe shop website and phone number
         coffee_website, coffee_phone_number = determine_url_or_phone()
 
@@ -191,110 +254,59 @@ class GoogleMapCafeBasic(GoogleMapOperator):
         shutdown_checksum = self.chk_cafe_dead()
         cafe_googlemap_info["isClosed"] = shutdown_checksum
         if shutdown_checksum is not False:
+            # Save data
             cafe_googlemap_info["title"] = str(coffee_shop_name)
             cafe_googlemap_info["isClosed"] = shutdown_checksum
             cafe_googlemap_info["address"] = str(coffee_address)[3:]
             cafe_googlemap_info["phone"] = str(coffee_phone_number)
 
-            print("============== Cafe Basic Information ==============")
-            print("coffee_shop_name: ", coffee_shop_name)
-            print("coffee_address: ", coffee_address)
-            print("coffee_phone_number: ", coffee_phone_number)
-            print("coffee_website: ", coffee_website)
-
+            # Display the data
+            show_data(shutdown_checksum)
             return cafe_googlemap_info
+        else:
+            # Coffee work time table
+            coffee_work_time_table = self.browser.find_element_by_css_selector("div.section-open-hours-container.cX2WmPgCkHi__container-hoverable").get_attribute("aria-label")
+            print(coffee_work_time_table)
 
-        # Coffee work time table
-        coffee_work_time_table = self.browser.find_element_by_css_selector("div.section-open-hours-container.cX2WmPgCkHi__container-hoverable").get_attribute("aria-label")
-        print(coffee_work_time_table)
-
-        # Coffee all comment number
-        retry_time = 0
-        while retry_time <= 3:
-            retry_time += 1
-            all_comments_number = super().find_html_ele("button.jqnFjrOWMVU__button.gm2-caption")
-            all_comments_number_2 = self.browser.find_element_by_css_selector("span.section-rating-term > span + span > span > button").text
-            # The number maybe have ","
-            # Replace the "," in the number character.
-            all_comments_number_list = re.findall(r"[0-9]{0,7}", str(all_comments_number).replace(",", ""))
-            all_comments_number_2_list = re.findall(r"[0-9]{0,7}", str(all_comments_number_2).replace(",", ""))
-            while "" in all_comments_number_list:
-                all_comments_number_list.remove("")
-            while "" in all_comments_number_2_list:
-                all_comments_number_2_list.remove("")
-            if all_comments_number_list or all_comments_number_2_list:
-                if all_comments_number:
-                    GoogleMapCafeParam.ALL_COMMENTS = int(all_comments_number_list[0])
-                    break
-                else:
-                    if all_comments_number_2:
-                        GoogleMapCafeParam.ALL_COMMENTS = int(all_comments_number_2_list[0])
+            # Coffee all comment number
+            retry_time = 0
+            while retry_time <= 3:
+                retry_time += 1
+                all_comments_number = super().find_html_ele("button.jqnFjrOWMVU__button.gm2-caption")
+                all_comments_number_2 = self.browser.find_element_by_css_selector("span.section-rating-term > span + span > span > button").text
+                # The number maybe have ","
+                # Replace the "," in the number character.
+                all_comments_number_list = re.findall(r"[0-9]{0,7}", str(all_comments_number).replace(",", ""))
+                all_comments_number_2_list = re.findall(r"[0-9]{0,7}", str(all_comments_number_2).replace(",", ""))
+                while "" in all_comments_number_list:
+                    all_comments_number_list.remove("")
+                while "" in all_comments_number_2_list:
+                    all_comments_number_2_list.remove("")
+                if all_comments_number_list or all_comments_number_2_list:
+                    if all_comments_number:
+                        GoogleMapCafeParam.ALL_COMMENTS = int(all_comments_number_list[0])
                         break
                     else:
-                        print("[WARNING] This cafe doesn't have comment in Google Map.")
-            else:
-                print("[WARNING] It may occur something unexpected error when getting comments number ...")
+                        if all_comments_number_2:
+                            GoogleMapCafeParam.ALL_COMMENTS = int(all_comments_number_2_list[0])
+                            break
+                        else:
+                            print("[WARNING] This cafe doesn't have comment in Google Map.")
+                else:
+                    print("[WARNING] It may occur something unexpected error when getting comments number ...")
 
-        # Coffee comment rating
-        coffee_start_level = super().find_html_ele("div.gm2-display-2")
-        # Each start rate amount
-        each_coffee_start_level = self.browser.find_elements_by_css_selector("tr.jqnFjrOWMVU__histogram")
-        each_rate_number = [each_coffee_start_level[ele_index].get_attribute("aria-label") for ele_index in range(len(each_coffee_start_level))]
+            # Coffee comment rating
+            coffee_start_level = super().find_html_ele("div.gm2-display-2")
+            # Each start rate amount
+            each_coffee_start_level = self.browser.find_elements_by_css_selector("tr.jqnFjrOWMVU__histogram")
+            each_rate_number = [each_coffee_start_level[ele_index].get_attribute("aria-label") for ele_index in range(len(each_coffee_start_level))]
 
-        # Save data
-        cafe_googlemap_info["title"] = str(coffee_shop_name)
-        cafe_googlemap_info["address"] = str(coffee_address)[3:]
-        cafe_googlemap_info["phone"] = str(coffee_phone_number)
-        coffee_website = str(coffee_website).split(sep="、")[-1]
-        cafe_googlemap_info["url"] = str(coffee_website)
-        cafe_googlemap_info["businessHours"] = {}
-        data_list = coffee_work_time_table.split(sep=";")
-        for d in data_list:
-            d = str(d).split(sep="、")
-            if "星期一" in d[0]:
-                cafe_open_time = __word_day_info(cafe_googlemap_info, "mon", str(d[1]))
-                print("mon: ", cafe_open_time)
-            if "星期二" in d[0]:
-                cafe_open_time = __word_day_info(cafe_googlemap_info, "tue", str(d[1]))
-                print("tue: ", cafe_open_time)
-            if "星期三" in d[0]:
-                cafe_open_time = __word_day_info(cafe_googlemap_info, "wed", str(d[1]))
-                print("wed: ", cafe_open_time)
-            if "星期四" in d[0]:
-                cafe_open_time = __word_day_info(cafe_googlemap_info, "thu", str(d[1]))
-                print("thu: ", cafe_open_time)
-            if "星期五" in d[0]:
-                cafe_open_time = __word_day_info(cafe_googlemap_info, "fri", str(d[1]))
-                print("fri: ", cafe_open_time)
-            if "星期六" in d[0]:
-                cafe_open_time = __word_day_info(cafe_googlemap_info, "sat", str(d[1]))
-                print("sat: ", cafe_open_time)
-            if "星期日" in d[0]:
-                cafe_open_time = __word_day_info(cafe_googlemap_info, "sun", str(d[1]))
-                print("sun: ", cafe_open_time)
+            # Save data
+            cafe_googlemap_info = save_data(cafe_googlemap_info)
 
-        cafe_googlemap_info["rating"] = {}
-        cafe_googlemap_info["rating"]["avg"] = str(coffee_start_level)
-        cafe_googlemap_info["rating"]["total"] = str(GoogleMapCafeParam.ALL_COMMENTS)
-        cafe_googlemap_info["rating"]["level"] = {}
-        for start in each_rate_number:
-            start = str(start).split(sep="、")
-            this_start_level = str(start[0].split(sep=" ")[0])
-            this_start_level_comment_number = start[1].split(sep=" ")[0]
-            print("Start level: ", this_start_level)
-            print("This start level comment number: ", this_start_level_comment_number)
-            cafe_googlemap_info["rating"]["level"][this_start_level] = int(str(this_start_level_comment_number).replace(",", ""))
-
-        # Display the information which we want
-        print("============== Cafe Basic Information ==============")
-        print("coffee_shop_name: ", coffee_shop_name)
-        print("coffee_address: ", coffee_address)
-        print("coffee_phone_number: ", coffee_phone_number)
-        print("coffee_work_time_table: ", coffee_work_time_table)
-        print("coffee_website: ", coffee_website)
-        print("coffee_start_level: ", coffee_start_level)
-        print("each_rate_number: ", each_rate_number)
-        return cafe_googlemap_info
+            # Display the information which we want
+            show_data(shutdown_checksum)
+            return cafe_googlemap_info
 
 
 if __name__ == '__main__':
