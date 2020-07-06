@@ -65,6 +65,7 @@ class CrawlSoldier extends Actor with ActorLogging {
       // Send the data back to the Paladin to write to database
       context.parent ! RunningTaskResult("Here is the crawl-result data.", Basic, runningResult)
       this.GetData = true
+      self ! AreYouDonePreviousTask
 
   }
 
