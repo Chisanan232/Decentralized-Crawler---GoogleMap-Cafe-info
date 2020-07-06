@@ -21,8 +21,38 @@ class GoogleMapCafeServices(GoogleMapOperator):
         self.browser = browser
 
     def cafe_service_content(self, cafe_googlemap_info):
+        """
+        Get all service info.
+
+        Service type:
+        服務選項
+        Service type
+        無障礙程度
+        Barrier Free Level
+        產品/服務
+        Product/Service
+        設施
+        Facility
+        氣氛
+        Atmosphere
+        客層族群
+        Target customer
+        付款方式
+        Payment method
+
+        :param cafe_googlemap_info: A dictionary type value which saves all info.
+        :return: A dictionary type value which saves all info.
+        """
 
         def provide_service(ele_class):
+            """
+            Determine whether the service be provided by cafe or not.
+            :param ele_class: HTML element (CSS Selector).
+            :return: Boolean type value. Return True if the service be provided, return False if it doesn't. By the way,
+                     it return None value if program cannot identify, in other words, cannot get the target attribute of
+                     HTML element.
+            """
+
             not_provide = re.search(r"attributes-not-interested", str(ele_class))
             provide = re.search(r"attributes-done", str(ele_class))
             if not_provide is not None:
@@ -35,18 +65,9 @@ class GoogleMapCafeServices(GoogleMapOperator):
                 print("[WARNING] Cannot identify the info to know this service be provided or not ...")
                 return None
 
-        def get_or_pass(function, args):
-            try:
-                cafe_info = function(args)
-                if cafe_info is None:
-                    cafe_info = True
-                return cafe_info
-            except NoSuchElementException as e:
-                print("[WARNING] Doesn't have this information in this cafe.")
-                return None
-
-        click_result = get_or_pass(super().click_ele, "div.section-editorial-attributes")
+        click_result = super(GoogleMapCafeServices, self).get_or_pass(super().click_ele, "div.section-editorial-attributes")
         if click_result is None:
+            # This cafe doesn't have any service info.
             print("[WARNING] This cafe doesn't have any info about service.")
             cafe_googlemap_info["services"] = None
             return cafe_googlemap_info
@@ -57,22 +78,6 @@ class GoogleMapCafeServices(GoogleMapOperator):
         service_items_len = len(service_info_ele)
         print("[DEBUG] service_info_ele: ", service_info_ele)
         print("[DEBUG] service_items_len: ", service_items_len)
-        not_provide_class = "div.section-attribute-group-item-icon.maps-sprite-place-attributes-not-interested"
-        provide_class = "div.section-attribute-group-item-icon.maps-sprite-place-attributes-done"
-        # 服務選項
-        # Service type
-        # 無障礙程度
-        # Barrier Free Level
-        # 產品/服務
-        # Product/Service
-        # 設施
-        # Facility
-        # 氣氛
-        # Atmosphere
-        # 客層族群
-        # Target customer
-        # 付款方式
-        # Payment method
         cafe_googlemap_info["services"] = []
         for service_index in range(service_items_len):
             cafe_service_detail = {}
@@ -93,7 +98,6 @@ class GoogleMapCafeServices(GoogleMapOperator):
         super().click_ele("button.section-header-button.section-header-back-button.noprint.maps-sprite-common-arrow-back-white")
 
         print("Finish to get the service information.")
-
         return cafe_googlemap_info
 
 
