@@ -17,6 +17,8 @@ import re
 
 
 class GoogleMapCafeBasic(GoogleMapOperator):
+
+    WAIT_NEW_BROWSER_LOADING_TIME = 10
     
     def __init__(self, browser):
         self.browser = browser
@@ -119,6 +121,11 @@ class GoogleMapCafeBasic(GoogleMapOperator):
                 return None
 
         def determine_url_or_phone():
+            """
+            Determine the content of target HTML element is cafe website or cafe phone number.
+            :return: A tuple type value. First element is website URL and second one is phone number.
+            """
+            
             click_info = lambda index: \
             self.browser.find_elements_by_css_selector("div.ugiz4pqJLAG__primary-text.gm2-body-2")[index].click()
 
@@ -145,7 +152,7 @@ class GoogleMapCafeBasic(GoogleMapOperator):
                             og_window = self.browser.current_window_handle
                             print("og_windows: ", og_window)
                             click_info(index)
-                            time.sleep(2)
+                            time.sleep(self.WAIT_NEW_BROWSER_LOADING_TIME)
                             windows = self.browser.window_handles
                             print("windows: ", windows)
                             self.browser.switch_to.window(windows[-1])
