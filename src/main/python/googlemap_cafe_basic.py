@@ -125,7 +125,7 @@ class GoogleMapCafeBasic(GoogleMapOperator):
             Determine the content of target HTML element is cafe website or cafe phone number.
             :return: A tuple type value. First element is website URL and second one is phone number.
             """
-            
+
             click_info = lambda index: \
             self.browser.find_elements_by_css_selector("div.ugiz4pqJLAG__primary-text.gm2-body-2")[index].click()
 
@@ -208,12 +208,6 @@ class GoogleMapCafeBasic(GoogleMapOperator):
             return cafe_googlemap_info
 
         # Coffee work time table
-        # click_result = get_or_pass(self.click_ele, "span.cX2WmPgCkHi__section-info-hour-text")
-        # if click_result is not None:
-        #     coffee_work_time_table = self.browser.find_element_by_css_selector("div.section-open-hours-container.cX2WmPgCkHi__container-hoverable").get_attribute("aria-label")
-        # else:
-        #     coffee_work_time_table = None
-
         coffee_work_time_table = self.browser.find_element_by_css_selector("div.section-open-hours-container.cX2WmPgCkHi__container-hoverable").get_attribute("aria-label")
         print(coffee_work_time_table)
 
@@ -253,12 +247,6 @@ class GoogleMapCafeBasic(GoogleMapOperator):
         # Save data
         cafe_googlemap_info["title"] = str(coffee_shop_name)
         cafe_googlemap_info["address"] = str(coffee_address)[3:]
-        # Check the phone number info
-        # coffee_phone_number = re.search(r"[0-9]{8,12}", str(coffee_phone_number))
-        # if coffee_phone_number is not None:
-        #     coffee_phone_number = coffee_phone_number.group(0)
-        # else:
-        #     coffee_phone_number = None
         cafe_googlemap_info["phone"] = str(coffee_phone_number)
         coffee_website = str(coffee_website).split(sep="、")[-1]
         cafe_googlemap_info["url"] = str(coffee_website)
