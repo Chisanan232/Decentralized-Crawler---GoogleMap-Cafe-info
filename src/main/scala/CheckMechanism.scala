@@ -1,5 +1,6 @@
 package Cafe_GoogleMap_Crawler.src.main.scala
 
+import akka.actor.ActorRef
 import akka.util.Timeout
 
 import scala.concurrent.{Await, Awaitable}
@@ -21,6 +22,12 @@ class CheckMechanism {
     } else {
       false
     }
+  }
+
+
+  def getActorIndex(actorRef: ActorRef): Int = {
+    val indexFormatter = "[0-9]{1,7}".r
+    indexFormatter.findAllIn(actorRef.path.name.toString).toList.last.toInt
   }
 
 
