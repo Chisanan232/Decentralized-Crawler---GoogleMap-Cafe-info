@@ -58,10 +58,12 @@ case class ProduceFinish(content: String) extends CafeCrawlerMsg
 
 // Search Soldiers
 case class CrawlTask(content: String, target: Map[String, String]) extends CafeCrawlerMsg
+case class AreYouDonePreviousTask(content: String) extends CafeCrawlerMsg
 
 
 // Crawler Soldiers
 case class RunningTaskResult(content: String, part: CrawlPart, data: String) extends CafeCrawlerMsg
+case class IAmDoneTask(content: String) extends CafeCrawlerMsg
 
 
 // For test or debug
