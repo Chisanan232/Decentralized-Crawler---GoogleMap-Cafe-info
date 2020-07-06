@@ -181,21 +181,18 @@ class GoogleMapCafeBasic(GoogleMapOperator):
         # Coffee shop name
         coffee_shop_name = super().find_html_ele("h1.section-hero-header-title-title.GLOBAL__gm2-headline-5")
 
-        # Check the cafe still alive or not
-        shutdown_checksum = self.chk_cafe_dead()
-        cafe_googlemap_info["isClosed"] = shutdown_checksum
-        if shutdown_checksum is not False:
-            cafe_googlemap_info["title"] = str(coffee_shop_name)
-            cafe_googlemap_info["isClosed"] = shutdown_checksum
-
         get_info = lambda index: find_one_html_eles("div.ugiz4pqJLAG__primary-text.gm2-body-2", index)
         # Coffee address
         coffee_address = get_or_pass(get_info, 0)
         # Cafe shop website and phone number
         coffee_website, coffee_phone_number = determine_url_or_phone()
 
+        # Check the cafe still alive or not
+        shutdown_checksum = self.chk_cafe_dead()
+        cafe_googlemap_info["isClosed"] = shutdown_checksum
         if shutdown_checksum is not False:
             cafe_googlemap_info["title"] = str(coffee_shop_name)
+            cafe_googlemap_info["isClosed"] = shutdown_checksum
             cafe_googlemap_info["address"] = str(coffee_address)[3:]
             cafe_googlemap_info["phone"] = str(coffee_phone_number)
 
@@ -253,9 +250,7 @@ class GoogleMapCafeBasic(GoogleMapOperator):
         cafe_googlemap_info["businessHours"] = {}
         data_list = coffee_work_time_table.split(sep=";")
         for d in data_list:
-            print(d)
             d = str(d).split(sep="、")
-            print(d)
             if "星期一" in d[0]:
                 cafe_open_time = __word_day_info(cafe_googlemap_info, "mon", str(d[1]))
                 print("mon: ", cafe_open_time)
