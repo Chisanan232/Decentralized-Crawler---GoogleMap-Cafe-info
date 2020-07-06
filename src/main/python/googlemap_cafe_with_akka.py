@@ -23,6 +23,8 @@ import time
 import sys
 import re
 
+from selenium.webdriver.chrome.options import Options
+
 
 class TerminalCommand:
 
@@ -47,8 +49,10 @@ class TerminalCommand:
 
 class CoffeeCrawler:
 
+    SLEEP_TIME = 10
+
     def __init__(self):
-        chrome_options = webdriver.ChromeOptions()
+        chrome_options: Options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
 
         # Chrome version: ChromeDriver 81.0.4044.138
@@ -64,8 +68,8 @@ class CoffeeCrawler:
     def googlemap_request(self, shop_googlemap_url, part):
         # Go to the target URL
         self.browser.get(shop_googlemap_url)
-        print("Sleep 10 seconds to wait for the HTML and JavaScript code load ...")
-        time.sleep(10)
+        print("Sleep {} seconds to wait for the HTML and JavaScript code load ...".format(str(self.SLEEP_TIME)))
+        time.sleep(self.SLEEP_TIME)
 
         # Define a json type data
         global cafe_googlemap_info
