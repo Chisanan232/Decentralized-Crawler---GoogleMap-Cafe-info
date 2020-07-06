@@ -24,10 +24,15 @@ import sys
 
 class CoffeeCrawler:
 
+    SLEEP_TIME = 10
+
     def __init__(self):
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
+
         # Chrome version: ChromeDriver 81.0.4044.138
         # https://chromedriver.chromium.org/downloads
-        self.browser = webdriver.Chrome(executable_path=GoogleMapCafeParam.ChromeExecutorPath)
+        self.browser = webdriver.Chrome(executable_path=GoogleMapCafeParam.ChromeExecutorPath, chrome_options=chrome_options)
 
         self.web_operator = GoogleMapOperator(self.browser)
         self.basic_info_cls = GoogleMapCafeBasic(self.browser)
@@ -39,8 +44,8 @@ class CoffeeCrawler:
 
         # Go to the target URL
         self.browser.get(shop_googlemap_url)
-        print("Sleep 10 seconds to wait for the HTML and JavaScript code load ...")
-        time.sleep(10)
+        print("Sleep {} seconds to wait for the HTML and JavaScript code load ...".format(str(self.SLEEP_TIME)))
+        time.sleep(self.SLEEP_TIME)
 
         # Define a json type data
         global cafe_googlemap_info
@@ -59,13 +64,12 @@ class CoffeeCrawler:
 
         # =+=+=+=+=+=+=+=+=+= Cafe all images =+=+=+=+=+=+=+=+=+=
         # Cafe picture
-        googlemap_img_list = self.all_imgs_cls.get_cafe_images_url(index)
+        googlemap_img_list = self.all_imgs_cls.get_cafe_images_url(index, cafe_googlemap_info)
         # Save data
         cafe_googlemap_info["photos"] = googlemap_img_list
         print("googlemap_img_list: ", googlemap_img_list)
 
         print("[Finish] Download the Google Map Cafe images !")
-
         return cafe_googlemap_info
 
 
