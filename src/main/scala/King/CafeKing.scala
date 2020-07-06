@@ -115,7 +115,8 @@ class CafeKing extends Actor with ActorLogging{
       for (soldierID <- 0.until(KafkaConfig.GoogleMapCrawlPreDataTopicPartitionsNum)) searchSoldiers(soldierID) = context.actorOf(Props[SearchSoldier], AkkaConfig.SearchPreDataSoldierName + s"-$soldierID")
       searchSoldiers.foreach(soldierRef => {
         val soldier = context.actorSelection(soldierRef.path)
-        soldier ! SearchPreData("Please sniff data and here is your soldier ID.", soldierRef.path.name.takeRight(1).toInt)
+        // Get the index of actor Name
+        soldier ! SearchPreData("Please sniff data and here is your soldier ID.", this.check.getActorIndex(soldierRef))
       })
 
       // Import cafe info which crawler needs to use.
