@@ -92,7 +92,7 @@ class CoffeeCrawler:
         if re.search(r"all", part, re.IGNORECASE) is not None or re.search(r"images", part, re.IGNORECASE) is not None:
             # =+=+=+=+=+=+=+=+=+= Cafe all images =+=+=+=+=+=+=+=+=+=
             # Cafe picture
-            googlemap_img_list = self.all_imgs_cls.get_cafe_images_url(index)
+            googlemap_img_list = self.all_imgs_cls.get_cafe_images_url(index, cafe_googlemap_info)
             # Save data
             cafe_googlemap_info["photos"] = googlemap_img_list
             print("googlemap_img_list: ", googlemap_img_list)
