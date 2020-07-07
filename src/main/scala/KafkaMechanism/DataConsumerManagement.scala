@@ -3,6 +3,9 @@ package Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism
 import java.util
 import java.util.Properties
 
+import scala.collection.mutable.ListBuffer
+import scala.collection.JavaConverters._
+
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.TopicPartition
 
@@ -59,6 +62,18 @@ class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
   }
 
 
+  def getStartOffset(topic: String, partition: Int) (implicit consumer: KafkaConsumer[String, String]): Long = {
+    val tp = new TopicPartition(topic, partition)
+    consumer.beginningOffsets(util.Arrays.asList(tp)).asScala(tp)
+  }
+
+
+  def getEndOffset(topic: String, partition: Int) (implicit consumer: KafkaConsumer[String, String]): Long = {
+    val tp = new TopicPartition(topic, partition)
+    consumer.endOffsets(util.Arrays.asList(tp)).asScala(tp)
+  }
+
+
   def getMsg(timeoutMins: Int) (implicit consumer: KafkaConsumer[String, String]): Unit = {
     /*
     This method should be overwrite in each actor.
@@ -85,3 +100,19 @@ class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
   }
 
 }
+
+
+//object TestConsumerMethod extends App {
+//
+//  /***
+//   * This object just for debug or develop.
+//   */
+//
+//  implicit val groupID = "crawler-soldier"
+//  val cm = new DataConsumerManagement()
+//  implicit val consumer = new KafkaConsumer[String, String](cm.defineProperties())
+//  cm.getEndOffset("test", 0)
+//  cm.getEndOffset("test", 1)
+//  cm.getEndOffset("test", 2)
+//
+//}
