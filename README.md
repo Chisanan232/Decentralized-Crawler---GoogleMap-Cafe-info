@@ -5,12 +5,19 @@ A decentralized crawler which targets to crawl GoogleMap cafe data (shop informa
 <br>
 
 ### Motivation
-This program for my responsibility of crawling data from internet. It's a part of side project which also be called as "Coffee Google" currently. <br>
+This program be developed for my responsibility of crawling data from internet. It's a part of side project which also be called as "Coffee Google" currently. <br>
 For "Coffee Google" project, it needs to integrate all data which from different sources and must to crawl data from internet. However, general crawler program is too slow to get target data, especially crawler program be developed with framework Selenium. <br>
 <br>
 
 ### Skills
 This project classifies it to 2 parts. One is crawler, another one is other prcesses logic-implements (like Multiple Actors relationship, Send message mechanism and build Kafka producer, consumer, etc). <br>
+
+#### Environment
+##### For Developing
+OS: MacOS (Current Version: 10.14.5)
+
+#### For Running
+OS: MacOS (Current Version: 10.14.5), Windows OS (Current Version: Win10)
 
 #### Crawler
 Language: Python <br>
