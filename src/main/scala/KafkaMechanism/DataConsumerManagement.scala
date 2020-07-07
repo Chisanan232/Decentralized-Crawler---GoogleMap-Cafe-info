@@ -95,6 +95,28 @@ class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
   }
 
 
+  def saveMsg(topic: String, partition: Int, timeoutMins: Int) (implicit consumer: KafkaConsumer[String, String]): List[Map[String, String]] = {
+    /*
+    This method should be overwrite in each actor.
+     */
+
+    println("******************************************")
+    println("*                                        *")
+    println("*    You should overwrite this method.   *")
+    println("*                                        *")
+    println("******************************************")
+    List()
+
+    // Here is some sample code you could use.
+    //    while (true) {
+    //      val records = consumer.poll(timeoutMins).asScala
+    //      for (record <- records.iterator) {
+    //        println(record.value())
+    //      }
+    //    }
+  }
+
+
   def closeSession() (implicit consumer: KafkaConsumer[String, String]): Unit = {
     consumer.close()
   }
