@@ -7,7 +7,9 @@ import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 
-class DataProducerManagement extends KafkaManagement {
+class DataProducerManagement(clientID: Int) extends KafkaManagement {
+
+  val ClientName = "producer"
 
   private val props = new Properties()
 //  val producer = new KafkaProducer[String, String](this.defineProperties())
@@ -19,13 +21,16 @@ class DataProducerManagement extends KafkaManagement {
     this.props.put("bootstrap.servers", "localhost:9092")
     this.props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     this.props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    this.props.put("client.id", this.ClientName + s"-$clientID")
     props
   }
 
 
   def topicsList(): List[String] = {
     val admin = AdminClient.create(this.defineProperties())
-    admin.listTopics().names().get().toArray().map(_.toString).toList
+    val data = admin.listTopics().names().get().toArray().map(_.toString).toList
+    admin.close()
+    data
   }
 
 
@@ -41,22 +46,19 @@ class DataProducerManagement extends KafkaManagement {
     val admin = AdminClient.create(this.defineProperties())
     val newTopicCondition = new NewTopic(topicName, partitionsNum, replicationsNum)
     admin.createTopics(util.Arrays.asList(newTopicCondition))
+    admin.close()
   }
 
 
   def deleteTopic(topics: String): Unit = {
     val admin = AdminClient.create(this.defineProperties())
     admin.deleteTopics(util.Arrays.asList(topics))
+    admin.close()
   }
 
 
   def topicPartitionsNum(topic: String) (implicit producer: KafkaProducer[String, String]): Int = {
     producer.partitionsFor(topic).size()
-  }
-
-
-  def test(): Unit = {
-    val admin = AdminClient.create(this.defineProperties())
   }
 
 
