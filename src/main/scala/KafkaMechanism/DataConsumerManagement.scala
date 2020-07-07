@@ -10,7 +10,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.TopicPartition
 
 
-class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
+class DataConsumerManagement(clientID: Int) (implicit groupID: String) extends KafkaManagement {
+
+  val ClientName = "consumer"
 
   private val props = new Properties()
   //  val consumer = new KafkaConsumer[String, String](this.defineProperties())
@@ -23,6 +25,7 @@ class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
     this.props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     this.props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     this.props.put("auto.offset.reset", "latest")
+    this.props.put("client.id", this.ClientName + s"-$clientID")
     this.props.put("group.id", groupID)
     props
   }
@@ -49,7 +52,7 @@ class DataConsumerManagement(implicit groupID: String) extends KafkaManagement {
     import scala.collection.JavaConverters.asJavaCollection
 
     // 1. Get all topic partitions
-    val pm = new DataProducerManagement
+    val pm = new DataProducerManagement(clientID)
     val partitionNum = pm.topicsList().length
     val topicPartitions = new Array[TopicPartition](partitionNum)
     for (partitionID <- 0.until(partitionNum)) topicPartitions(partitionID) = new TopicPartition(topic, partitionID)
