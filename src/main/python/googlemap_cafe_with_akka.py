@@ -66,6 +66,13 @@ class CoffeeCrawler:
         self.all_imgs_cls = GoogleMapCafeImage(self.browser)
 
     def googlemap_request(self, shop_googlemap_url, part):
+        """
+        The main code of crawling data which integrates all parts of data.
+        :param shop_googlemap_url: A string type value. The Cafe GoogleMap Page API.
+        :param part: A String type data. Part of target-crawl-content.
+        :return: A dictionary type data which saves all info.
+        """
+
         # Go to the target URL
         self.browser.get(shop_googlemap_url)
         print("Sleep {} seconds to wait for the HTML and JavaScript code load ...".format(str(self.SLEEP_TIME)))
@@ -102,6 +109,17 @@ class CoffeeCrawler:
 
 
     def main_code(self, cafe_id, cafe_url, cafe_lat, cafe_lng, part="all", save_file=False):
+        """
+        Call main crawl-code and some error mechanism. The target data will be saved here.
+        :param cafe_id: A string type value. Cafe ID.
+        :param cafe_url: A string type value. Cafe GoogleMap API.
+        :param cafe_lat: A string type value. Cafe address latitude in GoogleMap.
+        :param cafe_lng: A string type value. Cafe address longitude in GoogleMap.
+        :param part: A string type value. Target-crawl-content part.
+        :param save_file: A boolean type value. It will save data to file if it's True. It doesn't if it's False.
+        :return: None type value.
+        """
+
         try:
             cafe_info = coffee_crawler.googlemap_request(cafe_url, part)
             cafe_info["googlemap"] = {"url": cafe_url, "lat": cafe_lat, "lng": cafe_lng}
@@ -160,6 +178,17 @@ class CoffeeCrawler:
 
 
     def debug_main_code(self, cafe_id, cafe_url, cafe_lat, cafe_lng, part="all", save_file=False):
+        """
+        For debugging.
+        :param cafe_id: A string type value. Cafe ID.
+        :param cafe_url: A string type value. Cafe GoogleMap API.
+        :param cafe_lat: A string type value. Cafe address latitude in GoogleMap.
+        :param cafe_lng: A string type value. Cafe address longitude in GoogleMap.
+        :param part: A string type value. Target-crawl-content part.
+        :param save_file: A boolean type value. It will save data to file if it's True. It doesn't if it's False.
+        :return: None type value.
+        """
+
         cafe_info = coffee_crawler.googlemap_request(cafe_url, part=part)
         cafe_info["googlemap"] = {"url": cafe_url, "lat": cafe_lat, "lng": cafe_lng}
         cafe_info["id"] = cafe_id
