@@ -1,6 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.Paladin
 
 import Cafe_GoogleMap_Crawler.src.main.scala.config._
+import Cafe_GoogleMap_Crawler.src.main.scala.CheckMechanism
 import Cafe_GoogleMap_Crawler.src.main.scala.Soldier.ProducePreDataSoldier
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
@@ -10,6 +11,8 @@ class ProducePreDataPaladin extends Actor with ActorLogging {
 
   var allProduceTaskNum: Int = 0
   var currentProduceTaskDone: Int = 0
+
+  private val check = new CheckMechanism
 
   override def receive: Receive = {
 
@@ -29,8 +32,7 @@ class ProducePreDataPaladin extends Actor with ActorLogging {
       for (producerID <- 0.until(KafkaConfig.GoogleMapCrawlPreDataTopicPartitionsNum)) produceSoldiers(producerID) = context.actorOf(Props[ProducePreDataSoldier], AkkaConfig.ProduceCafePreDataSoldierName + s"-$producerID")
       produceSoldiers.foreach(producerRef => {
         val producer = context.actorSelection(producerRef.path)
-        val producerID = producerRef.path.name.takeRight(1).toInt
-        producer ! ImportCafeCrawlerConditions("Here are the all pre-data which be needed for cafe crawlers.", DisCafePreData.toList.apply(producerID))
+        producer ! ImportCafeCrawlerConditions("Here are the all pre-data which be needed for cafe crawlers.", DisCafePreData.toList.apply(this.check.getActorIndex(producerRef)))
       })
 
 
