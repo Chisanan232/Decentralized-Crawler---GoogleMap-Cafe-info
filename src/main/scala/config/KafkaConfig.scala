@@ -2,7 +2,7 @@ package Cafe_GoogleMap_Crawler.src.main.scala.config
 
 object KafkaConfig {
 
-  val Nodes = ""
+  val Nodes = "localhost:9092"
 
 //  val GoogleMapCrawlPreDataTopic = "googlemap-crawl-pre-data"
 //  val GoogleAPITopic = "GoogleMap-API"
