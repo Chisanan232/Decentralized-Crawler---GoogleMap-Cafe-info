@@ -23,10 +23,10 @@ class TasksExecutor {
 
   def runCode(crawlPart: CrawlPart, preData: Map[String, String]): String = {
     // 1. Parse crawl pre-data. (Get the data which be saved in the collection)
-    val id = preData.get("id").get.toString
-    val api = preData.get("url").get.toString
-    val lat = preData.get("lat").get.toString
-    val lng = preData.get("lng").get.toString
+    val id = preData("id").toString
+    val api = preData("url").toString
+    val lat = preData("lat").toString
+    val lng = preData("lng").toString
 
     // 2. Assign the value which we got to the string type value as a command line
     val runningCmd = s"python $Path/googlemap_cafe_with_akka.py " +
