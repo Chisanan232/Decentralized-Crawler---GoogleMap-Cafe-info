@@ -1,5 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism
 
+import Cafe_GoogleMap_Crawler.src.main.scala.config.KafkaConfig
+
 import java.util
 import java.util.Properties
 
@@ -18,7 +20,7 @@ class DataProducerManagement(clientID: Int) extends KafkaManagement {
     /*
     If developer want to add more configuration or other setting, could overwrite this method.
      */
-    this.props.put("bootstrap.servers", "localhost:9092")
+    this.props.put("bootstrap.servers", KafkaConfig.Nodes)
     this.props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     this.props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     this.props.put("client.id", this.ClientName + s"-$clientID")

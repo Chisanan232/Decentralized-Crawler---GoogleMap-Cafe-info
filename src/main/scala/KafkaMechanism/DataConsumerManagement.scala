@@ -1,5 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism
 
+import Cafe_GoogleMap_Crawler.src.main.scala.config.KafkaConfig
+
 import java.util
 import java.util.Properties
 
@@ -21,7 +23,7 @@ class DataConsumerManagement(clientID: Int) (implicit groupID: String) extends K
     /*
     If developer want to add more configuration or other setting, could overwrite this method.
      */
-    this.props.put("bootstrap.servers", "localhost:9092")
+    this.props.put("bootstrap.servers", KafkaConfig.Nodes)
     this.props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     this.props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     this.props.put("auto.offset.reset", "latest")
