@@ -1,6 +1,7 @@
 package Cafe_GoogleMap_Crawler.src.main.scala.Soldier
 
 import Cafe_GoogleMap_Crawler.src.main.scala.config._
+import Cafe_GoogleMap_Crawler.src.main.scala.CheckMechanism
 import Cafe_GoogleMap_Crawler.src.main.scala.KafkaMechanism.DataProducerManagement
 
 import scala.util.parsing.json.JSONObject
@@ -10,6 +11,8 @@ import akka.actor.{Actor, ActorLogging, Props}
 
 
 class ProducePreDataSoldier extends Actor  with ActorLogging {
+
+  private val check = new CheckMechanism
 
   override def receive: Receive = {
 
@@ -36,7 +39,7 @@ class ProducePreDataSoldier extends Actor  with ActorLogging {
       // This is a better method:
       // Do the data process in the Data Source Class with Spark.
 
-      val pm = new DataProducerManagement
+      val pm = new DataProducerManagement(this.check.getActorIndex(self))
       implicit val producer = new KafkaProducer[String, String](pm.defineProperties())
       cafePreData.foreach(preData => {
         val jsonData = JSONObject(preData.asInstanceOf[Map[String, String]])

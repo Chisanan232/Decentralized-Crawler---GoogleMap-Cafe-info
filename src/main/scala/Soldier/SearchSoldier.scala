@@ -88,7 +88,7 @@ class SearchSoldier extends Actor with ActorLogging {
       this.SoldierID = soldierID
 
       implicit val groupID = "crawler-soldier"
-      val cm = new DataConsumerManagement() {
+      val cm = new DataConsumerManagement(this.check.getActorIndex(self)) {
         override def getMsg(timeoutMins: Int)(implicit consumer: KafkaConsumer[String, String]): Unit = {
           while (true) {
             val records = consumer.poll(timeoutMins).asScala
