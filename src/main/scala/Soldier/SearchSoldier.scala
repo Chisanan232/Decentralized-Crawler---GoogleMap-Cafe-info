@@ -126,6 +126,7 @@ class SearchSoldier extends Actor with ActorLogging {
       }
 
       implicit val consumer = new KafkaConsumer[String, String](cm.defineProperties())
+      // Here is the code line which is question key point.
       cm.scanOnePartitionMsg(KafkaConfig.GoogleMapCrawlPreDataTopic, soldierID)
       cm.getMsg(100)
 
