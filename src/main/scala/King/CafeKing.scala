@@ -85,7 +85,7 @@ class CafeKing extends Actor with ActorLogging{
 //    this.APIs = cafeGMAPIs
 //    this.CafeLatss = cafeLats
 //    this.CafeLngs = cafeLngs
-    this.CafePreData = preDataList.take(2)
+    this.CafePreData = preDataList
 
     super.preStart()
   }
