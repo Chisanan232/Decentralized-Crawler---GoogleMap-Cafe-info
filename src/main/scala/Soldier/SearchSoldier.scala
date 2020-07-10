@@ -84,6 +84,29 @@ class SearchSoldier extends Actor with ActorLogging {
   override def receive: Receive = {
 
     case SearchPreData(content, soldierID) =>
+
+      /***
+       * Here logic need to change because I make a mistake of Kafka concept about Partition.
+       *
+       * Scenario:
+       *    In stand-alone mode topology, my environment is Kafka broker and I let this 'Search Soldier' subscribe the
+       *    target topic with partition. (The topic configuration is it has 3 partitions.)
+       *
+       * Question Point:
+       *    I think data will be distribute to each partitions. But I found that there only one partition has data,
+       *    others doesn't. And they even doesn't have leader.
+       *
+       * Correct Point:
+       *    Partition is a smallest 'physical' uit of Kafka. You could think that one partition mapping to one node of
+       *    decentralized system. In other words, you need a multiple nodes which has deploy Kafka mechanism. And the
+       *    other key point is option 'replication' which means that you want to set how many replication of data in
+       *    Kafka system.
+       *
+       * Solution:
+       *   It just needs to set one consumer in each node and distribute data to each crawler soldiers by it.
+       *
+       */
+
       log.info("Roger that! Start to sniff all data of target topic og Kafka server.")
       this.SoldierID = soldierID
 
