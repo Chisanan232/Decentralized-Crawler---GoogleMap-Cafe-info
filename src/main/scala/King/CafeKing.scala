@@ -91,6 +91,19 @@ class CafeKing extends Actor with ActorLogging{
   }
 
 
+  /***
+   * Not sure that the method should be overwrite to avoid that method 'preStart' be called every time if this method
+   * be call to use.
+   *
+   * Reason:
+   *     It will call preStart method again and it's a terrible message in this program. Why? Because it will initial
+   *     data again to let data record is incorrect.
+   *
+   * @param reason
+   */
+  override def postRestart(reason: Throwable): Unit = {super.postRestart(reason)}
+
+
   override def receive: Receive = {
 
     case CrawlTarget(content, part) =>
