@@ -17,7 +17,7 @@ class ProducePreDataPaladin extends Actor with ActorLogging {
   override def receive: Receive = {
 
     case DistributePreData(content, cafeDataNum, cafePreData) =>
-      log.info("")
+      log.info("Got it! Will start to produce pre-data of crawling ...")
       this.allProduceTaskNum = cafeDataNum
 
       // The pre-data should be a data type which like Json has Keyword-Value format.
