@@ -29,7 +29,7 @@ class TasksExecutor {
     val lng = preData("lng").toString
 
     // 2. Assign the value which we got to the string type value as a command line
-    val runningCmd = s"python $Path/googlemap_cafe_with_akka.py " +
+    val runningCmd = s"python3 $Path/googlemap_cafe_with_akka.py " +
       s"--crawl-part $crawlPart --cafe-googlemap-api $api --cafe-id $id --cafe-lat $lat --cafe-lng $lng --sleep enable"
     println("[INFO] Running Python Code Command Line: \n" + runningCmd)
     val runningResult = runningCmd.!!
