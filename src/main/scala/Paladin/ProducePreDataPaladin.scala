@@ -18,7 +18,7 @@ class ProducePreDataPaladin extends Actor with ActorLogging {
 
     case DistributePreData(content, cafeDataNum, cafePreData) =>
       log.info("Got it! Will start to produce pre-data of crawling ...")
-      this.allProduceTaskNum = cafeDataNum
+      allProduceTaskNum = cafeDataNum
 
       // The pre-data should be a data type which like Json has Keyword-Value format.
 //      val DisCafeIDs = cafeIDs.grouped(this.CafeNum / 10)
@@ -38,8 +38,8 @@ class ProducePreDataPaladin extends Actor with ActorLogging {
 
     case ProduceFinish =>
       log.info("Thank you for your help!")
-      this.currentProduceTaskDone += 1
-      if (this.currentProduceTaskDone.equals(this.allProduceTaskNum)) {
+      currentProduceTaskDone += 1
+      if (currentProduceTaskDone.equals(allProduceTaskNum)) {
         log.info("Done to produce pre-data!")
         context.stop(self)
       }

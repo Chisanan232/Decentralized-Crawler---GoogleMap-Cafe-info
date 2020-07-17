@@ -2,8 +2,10 @@ package Cafe_GoogleMap_Crawler.src.main.scala.Paladin
 
 import Cafe_GoogleMap_Crawler.src.main.scala.{Basic, Comments, CrawlPart, DataBaseOps, DataSource, Images, Services}
 import Cafe_GoogleMap_Crawler.src.main.scala.config._
+
 import org.json4s.jackson.JsonMethods._
 import org.json4s.DefaultFormats
+
 import akka.actor.{Actor, ActorLogging}
 import org.apache.spark.{SparkConf, SparkContext}
 import com.datastax.spark.connector._
@@ -62,7 +64,7 @@ class DataSaverPaladin extends Actor with ActorLogging {
   override def receive: Receive = {
 
     case CallDataSaverPaladin(content, tasksNum) =>
-      this.TotalTaskNum = tasksNum
+      TotalTaskNum = tasksNum
       log.info("Got it! Will wait for data coming ...")
 
 
@@ -78,22 +80,22 @@ class DataSaverPaladin extends Actor with ActorLogging {
       }
 
       // Initial current task number
-      if (this.CurrentTaskNum.keys.toList.contains(tableName).equals(false)) this.CurrentTaskNum += (tableName -> 0)
+      if (CurrentTaskNum.keys.toList.contains(tableName).equals(false)) CurrentTaskNum += (tableName -> 0)
 
       AkkaConfig.CrawlSaverPattern.toString match {
         case "JsonFile" =>
           log.info("Will write data to file as Json type file.")
-          val index = this.CurrentTaskNum(tableName)
+          val index = CurrentTaskNum(tableName)
           this.ds.saveDataToJsonFile(tableName, index, this.ds.convertJsonToDF(data))
-          sender() ! SaveFinish("Here is the latest process about saving data.", this.CurrentTaskNum)
+          sender() ! SaveFinish("Here is the latest process about saving data.", CurrentTaskNum)
           // Update the index
-          this.CurrentTaskNum += (tableName -> (index + 1))
+          CurrentTaskNum += (tableName -> (index + 1))
         case "DataBase" =>
           log.info("Will write data to database -- Cassandra.")
           this.saveData(CassandraConfig.Keyspace, tableName, part, data)
-          sender() ! SaveFinish("Here is the latest process about saving data.", this.CurrentTaskNum)
+          sender() ! SaveFinish("Here is the latest process about saving data.", CurrentTaskNum)
           // Update the index
-          this.CurrentTaskNum += (tableName -> (this.CurrentTaskNum(tableName) + 1))
+          CurrentTaskNum += (tableName -> (CurrentTaskNum(tableName) + 1))
       }
 
   }

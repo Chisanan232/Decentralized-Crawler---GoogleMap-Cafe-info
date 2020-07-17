@@ -20,7 +20,7 @@ class CrawlSoldier extends Actor with ActorLogging {
 
     case ReadyOnStandby(content, soldierID) =>
       log.info("Copy that! Ready on stand by!")
-      this.SoldierID = soldierID
+      SoldierID = soldierID
 
 
     case AreYouDonePreviousTask =>
@@ -28,11 +28,11 @@ class CrawlSoldier extends Actor with ActorLogging {
 
       val king = AkkaConfig.CafeKingName
       val searcker = AkkaConfig.SearchPreDataSoldierName
-      val soldierID = this.SoldierID
+      val soldierID = SoldierID
 
       context.system.actorSelection(s"user/$king/$searcker-$soldierID").resolveOne().onComplete{
         case Success(actorRef) =>
-          if (this.GetData.equals(true)) {
+          if (GetData.equals(true)) {
             actorRef ! "Yes"
           } else {
             actorRef ! "No"
@@ -45,7 +45,7 @@ class CrawlSoldier extends Actor with ActorLogging {
 
 
     case CrawlTask(content, target) =>
-      this.GetData = false
+      GetData = false
       log.info("Get the crawler pre-data!")
 
       // Start to crawl target data with the 'pre-data'.
@@ -64,7 +64,7 @@ class CrawlSoldier extends Actor with ActorLogging {
       println(runningResult)
       // Send the data back to the Paladin to write to database
       context.parent ! RunningTaskResult("Here is the crawl-result data.", Basic, runningResult)
-      this.GetData = true
+      GetData = true
       self ! AreYouDonePreviousTask
 
   }

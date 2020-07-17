@@ -53,15 +53,15 @@ class SearchSoldier extends Actor with ActorLogging {
     val allPart = List(Basic)
     for (part <- allPart) {
       val (paladin, soldier) = this.getActorSelection(part)
-      val soldierID = this.SoldierID
+      val soldierID = SoldierID
       context.system.actorSelection(s"user/$king/$paladin/$soldier-$soldierID").resolveOne().onComplete{
         case Success(actorRef) =>
           // Ensure that crawl soldier has done previous task.
           val answer = actorRef ? AreYouDonePreviousTask
           val checksum = this.check.waitAnswer(answer, actorRef.path.toString)
           if (checksum.toString.equals("Yes")) {
-            val data = if (this.UnderWaitDataList.isEmpty.equals(false)) {
-              this.UnderWaitDataList.toList.apply(1)
+            val data = if (UnderWaitDataList.isEmpty.equals(false)) {
+              UnderWaitDataList.toList.apply(1)
             } else {
               crawlPreData
             }
@@ -108,7 +108,7 @@ class SearchSoldier extends Actor with ActorLogging {
        */
 
       log.info("Roger that! Start to sniff all data of target topic og Kafka server.")
-      this.SoldierID = soldierID
+      SoldierID = soldierID
 
       implicit val groupID = "crawler-soldier"
       val cm = new DataConsumerManagement(this.check.getActorIndex(self)) {

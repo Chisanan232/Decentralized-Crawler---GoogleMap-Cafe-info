@@ -80,12 +80,12 @@ class CafeKing extends Actor with ActorLogging{
     val preDataList = ds.GoogleMapCafeInfo()
     ds.closeSpark()
 
-    this.CafeNum = cafeDataNum.toInt
-//    this.CafeIDs = cafeIDs
-//    this.APIs = cafeGMAPIs
-//    this.CafeLatss = cafeLats
-//    this.CafeLngs = cafeLngs
-    this.CafePreData = preDataList
+    CafeNum = cafeDataNum.toInt
+//    CafeIDs = cafeIDs
+//    APIs = cafeGMAPIs
+//    CafeLatss = cafeLats
+//    CafeLngs = cafeLngs
+    CafePreData = preDataList
 
     super.preStart()
   }
