@@ -12,9 +12,15 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.TopicPartition
 
 
-class DataConsumerManagement(clientID: Int) (implicit groupID: String) extends KafkaManagement {
+class DataConsumerManagement ()(implicit groupID: String) extends KafkaManagement {
 
   val ClientName = "consumer"
+  var clientID: Int = _
+
+  def this(clientID: Int) {
+    this()
+    this.clientID = clientID
+  }
 
   private val props = new Properties()
   //  val consumer = new KafkaConsumer[String, String](this.defineProperties())
@@ -23,12 +29,12 @@ class DataConsumerManagement(clientID: Int) (implicit groupID: String) extends K
     /*
     If developer want to add more configuration or other setting, could overwrite this method.
      */
-    this.props.put("bootstrap.servers", KafkaConfig.Nodes)
-    this.props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-    this.props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-    this.props.put("auto.offset.reset", "latest")
-    this.props.put("client.id", this.ClientName + s"-$clientID")
-    this.props.put("group.id", groupID)
+    props.put("bootstrap.servers", KafkaConfig.Nodes)
+    props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    props.put("auto.offset.reset", "latest")
+    props.put("client.id", ClientName + this.clientID)
+    props.put("group.id", groupID)
     props
   }
 

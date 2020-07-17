@@ -9,9 +9,15 @@ import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 
-class DataProducerManagement(clientID: Int) extends KafkaManagement {
+class DataProducerManagement extends KafkaManagement {
 
   val ClientName = "producer"
+  var clientID: Int = _
+
+  def this(clientID: Int) {
+    this()
+    this.clientID = clientID
+  }
 
   private val props = new Properties()
 //  val producer = new KafkaProducer[String, String](this.defineProperties())
@@ -20,10 +26,10 @@ class DataProducerManagement(clientID: Int) extends KafkaManagement {
     /*
     If developer want to add more configuration or other setting, could overwrite this method.
      */
-    this.props.put("bootstrap.servers", KafkaConfig.Nodes)
-    this.props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-    this.props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-    this.props.put("client.id", this.ClientName + s"-$clientID")
+    props.put("bootstrap.servers", KafkaConfig.Nodes)
+    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("client.id", ClientName + this.clientID)
     props
   }
 
