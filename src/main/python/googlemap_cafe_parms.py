@@ -11,7 +11,7 @@ class GoogleMapCafeParam:
     win_operator_system = re.search(r"win[0-9]{1,3}", code_os, re.IGNORECASE)
     linux_operator_system = re.search(r"linux", code_os, re.IGNORECASE)
     if mac_operator_system:
-        ChromeExecutorPath = "/Users/bryantliu/DevelopProject/KobeDevelopProject/Crawler/chromedriver"
+        ChromeExecutorPath = "src/main/scala/Cafe_GoogleMap_Crawler/src/main/resources/chromedriver"
     elif win_operator_system:
         ChromeExecutorPath = None
     else:
