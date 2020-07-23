@@ -12,15 +12,15 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.TopicPartition
 
 
-class DataConsumerManagement ()(implicit groupID: String) extends KafkaManagement {
+class DataConsumerManagement (clientID: Int)(implicit groupID: String) extends KafkaManagement {
 
   val ClientName = "consumer"
-  var clientID: Int = _
+//  var clientID: Int = _
 
-  def this(clientID: Int) {
-    this()
-    this.clientID = clientID
-  }
+//  def this(clientID: Int) {
+//    this()
+//    this.clientID = clientID
+//  }
 
   private val props = new Properties()
   //  val consumer = new KafkaConsumer[String, String](this.defineProperties())
@@ -33,7 +33,7 @@ class DataConsumerManagement ()(implicit groupID: String) extends KafkaManagemen
     props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     props.put("auto.offset.reset", "latest")
-    props.put("client.id", ClientName + this.clientID)
+    props.put("client.id", ClientName + clientID)
     props.put("group.id", groupID)
     props
   }
