@@ -1,3 +1,16 @@
+> ## 🗄️ Archived — 2026-09-24
+>
+> This repository is **archived and read-only**. It was a personal side project
+> from 2020 and is no longer maintained or updated.
+>
+> The crawler targets website structures and third-party APIs as they existed in
+> 2020; those have very likely changed since, so the scraping logic should not be
+> expected to work as-is. It is kept public for reference only.
+>
+> No successor project is being maintained in its place.
+
+---
+
 # Decentralized Crawler - GoogleMap Cafe info
 
 ### Description
